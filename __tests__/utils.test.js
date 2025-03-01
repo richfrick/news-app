@@ -1,6 +1,7 @@
 const {
   convertTimestampToDate,
   formatTopicsSeedingData,
+  createLookup,
 } = require('../db/seeds/utils');
 
 describe('convertTimestampToDate', () => {
@@ -39,7 +40,7 @@ describe('convertTimestampToDate', () => {
   });
 });
 
-describe('format topic data', () => {
+describe('format topic seeding data', () => {
   it('returns a new array', () => {
     const input = [
       {
@@ -77,12 +78,77 @@ describe('format topic data', () => {
       },
     ];
     const result = formatTopicsSeedingData(input);
-    expect(result).toEqual([["mitch", "The man, the Mitch, the legend", ""]]);
+    expect(result).toEqual([['mitch', 'The man, the Mitch, the legend', '']]);
   });
 });
 describe('create lookup', () => {
-  //use createLookup from utils.js
-  it.todo('returns a new object')
-  it.todo('original object is unchanged')
-  it.todo('a lookup object is returned containing a key & value shosen by the user')
-})
+  it('returns a new object', () => {
+    const input = [
+      {
+        id: 1,
+        topic: 'topic1',
+      },
+      {
+        id: 2,
+        topic: 'topic2',
+      },
+    ];
+    const result = createLookup(input, 'topic', 'id');
+    expect(result).toBeObject;
+    expect(result).not.toBe(input);
+  });
+  it('original input object is unchanged', () => {
+    const input = [
+      {
+        id: 1,
+        topic: 'topic1',
+      },
+      {
+        id: 2,
+        topic: 'topic2',
+      },
+    ];
+    createLookup(input, 'topic', 'id');
+    expect(input).toEqual([
+      {
+        id: 1,
+        topic: 'topic1',
+      },
+      {
+        id: 2,
+        topic: 'topic2',
+      },
+    ]);
+  });
+  it('a lookup object is returned containing a key & value shosen by the user', () => {
+    const input = [
+      {
+        id: 1,
+        topic: 'topic1',
+      },
+      {
+        id: 2,
+        topic: 'topic2',
+      },
+    ];
+    const result = createLookup(input, 'topic', 'id');
+    expect(result).toEqual({
+      topic1: 1,
+      topic2: 2,
+    });
+  });
+  it('returns an object with undefined key/value pair if the key and value do not exist in the input', () => {
+    const input = [
+      {
+        id: 1,
+        topic: 'topic1',
+      },
+      {
+        id: 2,
+        topic: 'topic2',
+      },
+    ];
+    const result = createLookup(input, 'username', 'address');
+    expect(result).toEqual({ undefined: undefined });
+  });
+});

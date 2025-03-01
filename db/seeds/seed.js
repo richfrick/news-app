@@ -3,6 +3,7 @@ const format = require('pg-format');
 const {
   formatTopicsSeedingData,
   convertTimestampToDate,
+  createLookup,
 } = require('../seeds/utils');
 
 const seed = async ({ topicData, userData, articleData, commentData }) => {
@@ -17,7 +18,8 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     await createComments();
     await seedTopics(topicData);
     await seedUsers(userData);
-    await seedArticles(articleData);
+    const insertedArticleData = await seedArticles(articleData);
+    await seedComments(commentData, insertedArticleData.rows);
   } catch (error) {
     console.log(error);
   }
@@ -85,7 +87,8 @@ function seedArticles(articleData) {
     ];
   });
   const articlesInsertQuery = format(
-    `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L`,
+    `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) 
+    VALUES %L RETURNING *`,
     formattedArticleData
   );
   return db.query(articlesInsertQuery);
@@ -101,9 +104,33 @@ function createComments() {
     created_at TIMESTAMP NOT NULL DEFAULT current_timestamp)`);
 }
 
-function seedComments(commentsData) {
-  //create article lookup and use article_title to inserd the article_id, use the createLookup util
-  //convert created_at timestamp using convertTimestampToDate
+function seedComments(commentsData, articleData) {
+  try {
+    //create article lookup and use article_title to inserd the article_id, use the createLookup util
+    const articleLookup = createLookup(articleData, 'title', 'article_id');
+
+    //convert created_at timestamp using convertTimestampToDate
+    const formattedCommentData = commentsData.map((comment) => {
+      const createdAtInCorrectFormat = convertTimestampToDate({
+        created_at: comment.created_at,
+      });
+
+      return [
+        articleLookup[comment.article_title],
+        comment.body,
+        comment.votes,
+        comment.author,
+        createdAtInCorrectFormat.created_at,
+      ];
+    });
+    const commentsInsertQuery = format(
+      `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L`,
+      formattedCommentData
+    );
+    return db.query(commentsInsertQuery);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 module.exports = seed;

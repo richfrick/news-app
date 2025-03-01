@@ -6,12 +6,23 @@ exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
 };
 
 exports.formatTopicsSeedingData = (topicData) => {
-  return topicData.map((topic) => {
-    return [topic.slug, topic.description, topic.img_url];
-  });
+  try {
+    return topicData.map((topic) => {
+      return [topic.slug, topic.description, topic.img_url];
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-exports.createLookup = (lookupInput) => {
-  const returnObject = {};
-  return returnObject;
+exports.createLookup = (data, key, value) => {
+  try {
+    const lookupTable = {};
+    data.forEach((dataElement) => {
+      lookupTable[dataElement[key]] = dataElement[value];
+    });
+    return lookupTable;
+  } catch (error) {
+    console.log(error);
+  }
 };
