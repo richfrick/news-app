@@ -8,20 +8,21 @@ const {
 
 const seed = async ({ topicData, userData, articleData, commentData }) => {
   try {
-    await db.query(`DROP TABLE IF EXISTS comments;`);
-    await db.query(`DROP TABLE IF EXISTS articles;`);
-    await db.query(`DROP TABLE IF EXISTS users;`);
-    await db.query(`DROP TABLE IF EXISTS topics;`);
-    await createTopics();
-    await createUsers();
-    await createArticles();
-    await createComments();
-    await seedTopics(topicData);
+    await db.query(`DROP TABLE IF EXISTS comments;`),
+      await db.query(`DROP TABLE IF EXISTS articles;`),
+      await db.query(`DROP TABLE IF EXISTS users;`),
+      await db.query(`DROP TABLE IF EXISTS topics;`),
+      await createTopics(),
+      await createUsers(),
+      await createArticles(),
+      await createComments(),
+      await seedTopics(topicData);
     await seedUsers(userData);
     const insertedArticleData = await seedArticles(articleData);
     await seedComments(commentData, insertedArticleData.rows);
+    console.log('Seeding Complete');
   } catch (error) {
-    console.log(error);
+    console.log('SEEDING FAILED:', error);
   }
 };
 
