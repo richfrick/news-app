@@ -14,9 +14,26 @@ afterAll(() => {
 
 describe('Articles Endpoint', () => {
   describe('GET: /api/articles', () => {
-    it.todo(
-      '200: for each article will return author, title, article_id, topic, created_at, votes, article_img_url, comment_count'
-    );
+    it.skip('200: for each article will return author, title, article_id, topic, created_at, votes, article_img_url, comment_count', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles');
+      expect(status).toBe(200);
+      articles.forEach((article) => {
+        expect(article).toEqual({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          //article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        });
+        expect([null, expect.any(String)]).toContain(article.article_img_url);
+      });
+    });
     it.todo('200: articles will be sorted in decending date order by default');
     it.todo('200: body does not appear in the any of the response objects');
     it.todo('200: article with no comments shows a comment_count of 0');
