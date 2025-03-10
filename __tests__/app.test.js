@@ -7,8 +7,22 @@ const app = require('../app/app');
 
 describe('GET /api', () => {
   test('200: Responds with an object detailing the documentation for each endpoint', async () => {
-    const { status, body } = await request(app).get('/api');
+    const {
+      status,
+      body: { endpoints },
+    } = await request(app).get('/api');
     expect(status).toBe(200);
-    expect(body.endpoints).toEqual(endpointsJson);
+    expect(endpoints).toEqual(endpointsJson);
   });
+  it(
+    '404: route not found message will be displayed if incorrect route is provided',
+    async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).get('/api/foo');
+      expect(status).toBe(404);
+      expect(msg).toBe('route not found');
+    }
+  );
 });
