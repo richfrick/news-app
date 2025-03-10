@@ -59,6 +59,13 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(400);
       expect(msg).toBe('Bad Request, incorrect type used in SQL query');
     });
-    it.todo('404: not found will be returned if the article_id does not exist');
+    it('404: not found will be returned if the article_id does not exist', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).get('/api/articles/99999999');
+      expect(status).toBe(404);
+      expect(msg).toBe('Not Found: article_id 99999999');
+    });
   });
 });

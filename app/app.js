@@ -3,6 +3,7 @@ const endpoints = require('../endpoints.json');
 const {
   handleServerErrors,
   handlePsqlErrors,
+  handleCustomErrors,
 } = require('../controllers/error.controllers');
 const { getTopics } = require('../controllers/topics.controllers');
 const { getArticlesById } = require('../controllers/articles.contoller');
@@ -21,6 +22,8 @@ app.all('/*', (_, response) => {
 });
 
 app.use(handlePsqlErrors);
+
+app.use(handleCustomErrors);
 
 app.use(handleServerErrors);
 

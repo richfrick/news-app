@@ -6,5 +6,9 @@ exports.fetchArticleById = async (id) => {
     [id]
   );
 
+  if (rows.length === 0) {
+    return Promise.reject({ status: 404, msg: `Not Found: article_id ${id}` });
+  }
+
   return rows[0];
 };
