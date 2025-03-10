@@ -17,11 +17,10 @@ describe('Articles Endpoint', () => {
     it.todo(
       '200: for each article will return author, title, article_id, topic, created_at, votes, article_img_url, comment_count'
     );
-    it.todo('200: articles will be sorted in decending date order by default')
-    it.todo('200: body does not appear in the any of the response objects')
-    it.todo('200: article with no comments shows a comment_count of 0')
+    it.todo('200: articles will be sorted in decending date order by default');
+    it.todo('200: body does not appear in the any of the response objects');
+    it.todo('200: article with no comments shows a comment_count of 0');
   });
-  
 
   describe('GET: /api/articles/:article_id', () => {
     it('200: article object will contain author, title, article_id, body, topic, created_at, votes, article_img_url', async () => {
@@ -47,7 +46,6 @@ describe('Articles Endpoint', () => {
         body: { article },
       } = await request(app).get('/api/articles/2');
       expect(status).toBe(200);
-      console.log(article);
       expect([article].length).toBe(1);
       expect(article).toEqual({
         article_id: 2,
@@ -67,15 +65,15 @@ describe('Articles Endpoint', () => {
         body: { msg },
       } = await request(app).get('/api/articles/foo');
       expect(status).toBe(400);
-      expect(msg).toBe('Bad Request, incorrect type used in SQL query');
+      expect(msg).toBe('Bad Request');
     });
     it('404: not found will be returned if the article_id does not exist', async () => {
       const {
         status,
         body: { msg },
-      } = await request(app).get('/api/articles/99999999');
+      } = await request(app).get('/api/articles/99');
       expect(status).toBe(404);
-      expect(msg).toBe('Not Found: article_id 99999999');
+      expect(msg).toBe('Not Found: article_id 99');
     });
   });
 });
