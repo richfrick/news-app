@@ -1,0 +1,1 @@
+exports.fetchArticleById = async (id) => {};
