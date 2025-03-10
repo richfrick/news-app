@@ -30,7 +30,7 @@
     "description": "returns an individual article based on the article_id provided",
     "queries": [],
     "exampleResponse": {
-      "article": [
+      "articles": [
         {
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",

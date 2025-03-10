@@ -13,6 +13,16 @@ afterAll(() => {
 });
 
 describe('Articles Endpoint', () => {
+  describe('GET: /api/articles', () => {
+    it.todo(
+      '200: for each article will return author, title, article_id, topic, created_at, votes, article_img_url, comment_count'
+    );
+    it.todo('200: articles will be sorted in decending date order by default')
+    it.todo('200: body does not appear in the any of the response objects')
+    it.todo('200: article with no comments shows a comment_count of 0')
+  });
+  
+
   describe('GET: /api/articles/:article_id', () => {
     it('200: article object will contain author, title, article_id, body, topic, created_at, votes, article_img_url', async () => {
       const {
