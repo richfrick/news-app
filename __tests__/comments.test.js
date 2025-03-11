@@ -72,3 +72,20 @@ describe('GET: /api/articles/:article_id/comments', () => {
     expect(msg).toEqual('Bad Request');
   });
 });
+
+describe('POST: /api/articles/:article_id/comments', () => {
+  it.todo('201: new comment can be created for a valid article article_id');
+  it.todo('201: new comment will repond with the posted comment');
+  it.todo(
+    '201: new comment will assign correct propertied to comment_id, votes, created_at, author, body, article_id'
+  );
+  it.todo(
+    '404: will respons with a not found if the article_id does not exist'
+  );
+  it.todo(
+    '400: will respond with bad request if the article_id is the wrong type'
+  );
+  it.todo(
+    '400: will return with bad request if the request body is incomplete'
+  );
+});
