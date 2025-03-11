@@ -15,6 +15,6 @@ exports.handleCustomErrors = (error, request, response, next) => {
 };
 
 exports.handleServerErrors = (error, request, response, next) => {
-  //console.log(error);
+  console.log(error);
   response.status(500).send({ msg: 'Internal Server Error' });
 };

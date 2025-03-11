@@ -12,8 +12,11 @@ const {
 } = require('../controllers/articles.contoller');
 const {
   getCommentsByArticleId,
+  postCommentbyArticleId,
 } = require('../controllers/comments.controller');
 const app = express();
+
+app.use(express.json());
 
 app.get('/api', (request, response) => {
   response.status(200).send({ endpoints });
@@ -26,6 +29,8 @@ app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticlesById);
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
+
+app.post('/api/articles/:article_id/comments', postCommentbyArticleId);
 
 app.all('/*', (_, response) => {
   response.status(404).send({ msg: 'route not found' });

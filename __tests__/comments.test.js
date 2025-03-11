@@ -74,11 +74,46 @@ describe('GET: /api/articles/:article_id/comments', () => {
 });
 
 describe('POST: /api/articles/:article_id/comments', () => {
-  it.todo('201: new comment can be created for a valid article article_id');
-  it.todo('201: new comment will repond with the posted comment');
-  it.todo(
-    '201: new comment will assign correct propertied to comment_id, votes, created_at, author, body, article_id'
-  );
+  it('201: new comment can be created for a valid article article_id', async () => {
+    const { status, body } = await request(app)
+      .post('/api/articles/2/comments')
+      .send({
+        author: 'icellusedkars',
+        body: 'foo bar',
+      });
+    expect(status).toBe(201);
+    expect(body).not.toBe(null);
+  });
+  it('201: new comment will repond with the posted comment', async () => {
+    const { status, body } = await request(app)
+      .post('/api/articles/2/comments')
+      .send({
+        author: 'icellusedkars',
+        body: 'foo bar',
+      });
+    expect(status).toBe(201);
+    expect(body).toEqual({ comment: 'foo bar' });
+  });
+  it('201: new comment will assign correct propertied to comment_id, votes, created_at, author, body, article_id', async () => {
+    await request(app).post('/api/articles/2/comments').send({
+      author: 'icellusedkars',
+      body: 'foo bar',
+    });
+    const {
+      status,
+      body: { comments },
+    } = await request(app).get('/api/articles/2/comments');
+    expect(status).toBe(200);
+    expect(comments.length).toBe(1);
+    expect(comments[0]).toEqual({
+      comment_id: 19,
+      votes: 0,
+      created_at: expect.any(String),
+      author: 'icellusedkars',
+      body: 'foo bar',
+      article_id: 2,
+    });
+  });
   it.todo(
     '404: will respons with a not found if the article_id does not exist'
   );
@@ -86,6 +121,11 @@ describe('POST: /api/articles/:article_id/comments', () => {
     '400: will respond with bad request if the article_id is the wrong type'
   );
   it.todo(
-    '400: will return with bad request if the request body is incomplete'
+    '404: will respond with a not found when the author is not in the db'
+  );
+  it.todo('400: will respond with a bad request when the author is invalid');
+  it.todo('400: will respond with a bad request when the body key is null');
+  it.todo(
+    '400: will return with bad request if the request body is missing author or body'
   );
 });
