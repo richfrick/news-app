@@ -23,7 +23,6 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(200);
       expect(articles.length).toBe(13);
       articles.forEach((article) => {
-        article[test] = test;
         expect(article).toMatchObject({
           author: expect.any(String),
           title: expect.any(String),
@@ -67,14 +66,6 @@ describe('Articles Endpoint', () => {
       );
     });
   });
-
-  describe('GET: /api/articles/:article_id/comments', () => {
-    it.todo('200: all comments for a specific article will be retirned')
-    it.todo('200: response objects will contain comment_id, votes, created_at, author, body, article_id')
-    it.todo('200: response will be filtered in ascending date order')
-    it.todo('404: not found response is returned when the article_id is not in the db')
-    it.todo('400: bad request will be returned if the article_id is the wrong type')
-  })
 
   describe('GET: /api/articles/:article_id', () => {
     it('200: article object will contain author, title, article_id, body, topic, created_at, votes, article_img_url', async () => {
