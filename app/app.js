@@ -6,7 +6,10 @@ const {
   handleCustomErrors,
 } = require('../controllers/error.controllers');
 const { getTopics } = require('../controllers/topics.controllers');
-const { getArticlesById } = require('../controllers/articles.contoller');
+const {
+  getArticlesById,
+  getArticles,
+} = require('../controllers/articles.contoller');
 const app = express();
 
 app.get('/api', (request, response) => {
@@ -14,6 +17,8 @@ app.get('/api', (request, response) => {
 });
 
 app.get('/api/topics', getTopics);
+
+app.get('/api/articles', getArticles);
 
 app.get('/api/articles/:article_id', getArticlesById);
 
