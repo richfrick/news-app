@@ -21,6 +21,7 @@ describe('Articles Endpoint', () => {
         body: { articles },
       } = await request(app).get('/api/articles');
       expect(status).toBe(200);
+      expect(articles.length).toBe(13);
       articles.forEach((article) => {
         article[test] = test;
         expect(article).toMatchObject({
@@ -54,8 +55,17 @@ describe('Articles Endpoint', () => {
         article_img_url: null,
       });
     });
-    it.todo('200: body does not appear in the any of the response objects');
-    it.todo('200: article with no comments shows a comment_count of 0');
+
+    it('200: body does not appear in the any of the response objects', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles');
+      expect(status).toBe(200);
+      articles.every((article) =>
+        expect(article.hasOwnProperty('body')).toBe(false)
+      );
+    });
   });
 
   describe('GET: /api/articles/:article_id', () => {
@@ -76,6 +86,7 @@ describe('Articles Endpoint', () => {
       });
       expect([null, expect.any(String)]).toContain(article.article_img_url);
     });
+
     it('200: an individual article can be retrieved by id', async () => {
       const {
         status,
@@ -103,6 +114,7 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(400);
       expect(msg).toBe('Bad Request');
     });
+
     it('404: not found will be returned if the article_id does not exist', async () => {
       const {
         status,
