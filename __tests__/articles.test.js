@@ -23,7 +23,6 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(200);
       expect(articles.length).toBe(13);
       articles.forEach((article) => {
-        article[test] = test;
         expect(article).toMatchObject({
           author: expect.any(String),
           title: expect.any(String),
@@ -56,7 +55,7 @@ describe('Articles Endpoint', () => {
       });
     });
 
-    it('200: body does not appear in the any of the response objects', async () => {
+    it('200: body does not appear in any of the response objects', async () => {
       const {
         status,
         body: { articles },
