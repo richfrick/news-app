@@ -16,6 +16,15 @@ exports.createNewComment = async (article_id, reqBody) => {
   const { author, body } = reqBody;
   const requestParams = [article_id, author, body];
 
+  if (!author || !body) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Bad Request: invalid request body',
+    });
+  }
+
+  await checkExists('articles', 'article_id', article_id);
+  await checkExists('users', 'username', author);
   const queryStr = format(
     'INSERT INTO comments (article_id, author, body) VALUES (%L) RETURNING body',
     requestParams
