@@ -50,12 +50,27 @@
     "exampleResponse": {
       "articles": [
         {
-          "comment_id": "I like the article",
+          "comment_id": 20,
           "votes": 3,
           "created_at": "2018-05-30T15:59:13.341Z",
           "author": "Dr.Article Author",
           "body": "this article is foo bar",
           "article_id": 1
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "creates a new comment on the article_id provided in the request. response will contain the successfully posted comment.",
+    "queries": [],
+    "exampleRequest": {
+      "author": "Dr.Article Author",
+      "body": "this article is foo bar"
+    },
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment": "this article is foo bar"
         }
       ]
     }

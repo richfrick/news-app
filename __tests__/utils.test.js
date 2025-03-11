@@ -2,6 +2,7 @@ const {
   convertTimestampToDate,
   formatTopicsSeedingData,
   createLookup,
+  checkExists,
 } = require('../db/seeds/utils');
 
 describe('convertTimestampToDate', () => {
@@ -81,6 +82,7 @@ describe('format topic seeding data', () => {
     expect(result).toEqual([['mitch', 'The man, the Mitch, the legend', '']]);
   });
 });
+
 describe('create lookup', () => {
   it('returns a new object', () => {
     const input = [
@@ -151,4 +153,18 @@ describe('create lookup', () => {
     const result = createLookup(input, 'username', 'address');
     expect(result).toEqual({ undefined: undefined });
   });
+});
+
+describe('check exists', () => {
+  it.skip('404: returns an error if column value is not found', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await checkExists('articles', 'article_id', 99);
+    expect(status).toBe(404);
+    expect(msg).toEqual('Not Found');
+  });
+  it.todo('404: returns an error if column is not found');
+  it.todo('404: returns an error if table value is not found');
+  it.todo('404: returns result from db query when it is successful');
 });

@@ -55,13 +55,21 @@ describe('GET: /api/articles/:article_id/comments', () => {
       article_id: 1,
     });
   });
+  it('200: a request to a valid article_id with no comments will return an empty array', async () => {
+    const {
+      status,
+      body: { comments },
+    } = await request(app).get('/api/articles/2/comments');
+    expect(status).toBe(200);
+    expect(comments).toEqual([]);
+  });
   it('404: not found response is returned when the article_id is not in the db', async () => {
     const {
       status,
       body: { msg },
     } = await request(app).get('/api/articles/99/comments');
     expect(status).toBe(404);
-    expect(msg).toEqual('Not Found: article_id 99');
+    expect(msg).toEqual('Not Found');
   });
   it('400: bad request will be returned if the article_id is the wrong type', async () => {
     const {
@@ -70,5 +78,132 @@ describe('GET: /api/articles/:article_id/comments', () => {
     } = await request(app).get('/api/articles/foo/comments');
     expect(status).toBe(400);
     expect(msg).toEqual('Bad Request');
+  });
+});
+
+describe('POST: /api/articles/:article_id/comments', () => {
+  it('201: new comment can be created for a valid article article_id', async () => {
+    const { status, body } = await request(app)
+      .post('/api/articles/2/comments')
+      .send({
+        author: 'icellusedkars',
+        body: 'foo bar',
+      });
+    expect(status).toBe(201);
+    expect(body).not.toBe(null);
+  });
+
+  it('201: new comment will respond with the posted comment', async () => {
+    const { status, body } = await request(app)
+      .post('/api/articles/2/comments')
+      .send({
+        author: 'icellusedkars',
+        body: 'foo bar',
+      });
+    expect(status).toBe(201);
+    expect(body).toEqual({ comment: 'foo bar' });
+  });
+
+  it('201: new comment will assign correct values to comment_id, votes, created_at, author, body, article_id', async () => {
+    await request(app).post('/api/articles/2/comments').send({
+      author: 'icellusedkars',
+      body: 'foo bar',
+    });
+    const {
+      status,
+      body: { comments },
+    } = await request(app).get('/api/articles/2/comments');
+    expect(status).toBe(200);
+    expect(comments.length).toBe(1);
+    expect(comments[0]).toEqual({
+      comment_id: 19,
+      votes: 0,
+      created_at: expect.any(String),
+      author: 'icellusedkars',
+      body: 'foo bar',
+      article_id: 2,
+    });
+  });
+
+  it('404: will respond with a not found if the article_id does not exist', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).post('/api/articles/99/comments').send({
+      author: 'icellusedkars',
+      body: 'foo bar',
+    });
+    expect(status).toBe(404);
+    expect(msg).toEqual('Not Found');
+  });
+
+  it('400: will respond with bad request if the article_id is the wrong type', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).post('/api/articles/foo/comments').send({
+      author: 'icellusedkars',
+      body: 'foo bar',
+    });
+    expect(status).toBe(400);
+    expect(msg).toEqual('Bad Request');
+  });
+
+  it('404: will respond with a not found when the author is not in the db', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).post('/api/articles/2/comments').send({
+      author: 'foo',
+      body: 'foo bar',
+    });
+    expect(status).toBe(404);
+    expect(msg).toEqual('Not Found');
+  });
+
+  it('404: will respond with a not found when the author is the wrong type', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).post('/api/articles/2/comments').send({
+      author: 2,
+      body: 'foo bar',
+    });
+    expect(status).toBe(404);
+    expect(msg).toEqual('Not Found');
+  });
+
+  it('400: will respond with a bad request when the body key is null', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).post('/api/articles/2/comments').send({
+      author: 'icellusedkars',
+      body: null,
+    });
+    expect(status).toBe(400);
+    expect(msg).toEqual('Bad Request: invalid request body');
+  });
+
+  it('400: will return bad request if the request body the body key', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).post('/api/articles/2/comments').send({
+      body: null,
+    });
+    expect(status).toBe(400);
+    expect(msg).toEqual('Bad Request: invalid request body');
+  });
+
+  it('400: will return with bad request if the request body is missing author', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).post('/api/articles/2/comments').send({
+      body: null,
+    });
+    expect(status).toBe(400);
+    expect(msg).toEqual('Bad Request: invalid request body');
   });
 });

@@ -1,10 +1,26 @@
-const { fetchCommentsByArticleId } = require('../models/comments.model');
+const {
+  fetchCommentsByArticleId,
+  createNewComment,
+} = require('../models/comments.model');
 
 exports.getCommentsByArticleId = async (request, response, next) => {
   try {
     const { article_id } = request.params;
     const comments = await fetchCommentsByArticleId(article_id);
     response.status(200).send({ comments });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.postCommentbyArticleId = async (request, response, next) => {
+  try {
+    const {
+      params: { article_id },
+      body,
+    } = request;
+    const newComment = await createNewComment(article_id, body);
+    response.status(201).send({ comment: newComment[0].body });
   } catch (error) {
     next(error);
   }
