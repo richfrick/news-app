@@ -14,7 +14,7 @@ afterAll(() => {
 });
 
 describe('GET: /api/articles/:article_id/comments', () => {
-  it('200: all comments for a specific article will be retirned', async () => {
+  it('200: all comments for a specific article will be returned', async () => {
     const {
       status,
       body: { comments },
@@ -55,10 +55,20 @@ describe('GET: /api/articles/:article_id/comments', () => {
       article_id: 1,
     });
   });
-  it.todo(
-    '404: not found response is returned when the article_id is not in the db'
-  );
-  it.todo(
-    '400: bad request will be returned if the article_id is the wrong type'
-  );
+  it('404: not found response is returned when the article_id is not in the db', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).get('/api/articles/99/comments');
+    expect(status).toBe(404);
+    expect(msg).toEqual('Not Found: article_id 99');
+  });
+  it('400: bad request will be returned if the article_id is the wrong type', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).get('/api/articles/foo/comments');
+    expect(status).toBe(400);
+    expect(msg).toEqual('Bad Request');
+  });
 });

@@ -6,5 +6,9 @@ exports.fetchCommentsByArticleId = async (article_id) => {
     [article_id]
   );
 
+  if (rows.length === 0) {
+    return Promise.reject({ status: 404, msg: `Not Found: article_id ${article_id}` });
+  }
+
   return rows;
 };
