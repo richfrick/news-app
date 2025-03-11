@@ -43,5 +43,21 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "returns all of the comments relating to an article",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "comment_id": "I like the article",
+          "votes": 3,
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "author": "Dr.Article Author",
+          "body": "this article is foo bar",
+          "article_id": 1
+        }
+      ]
+    }
   }
 }
