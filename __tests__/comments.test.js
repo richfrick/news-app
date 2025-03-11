@@ -55,13 +55,21 @@ describe('GET: /api/articles/:article_id/comments', () => {
       article_id: 1,
     });
   });
+  it('200: a request to a valid article_id with no comments will return an empty array', async () => {
+    const {
+      status,
+      body: { comments },
+    } = await request(app).get('/api/articles/2/comments');
+    expect(status).toBe(200);
+    expect(comments).toEqual([]);
+  });
   it('404: not found response is returned when the article_id is not in the db', async () => {
     const {
       status,
       body: { msg },
     } = await request(app).get('/api/articles/99/comments');
     expect(status).toBe(404);
-    expect(msg).toEqual('Not Found: article_id 99');
+    expect(msg).toEqual('Not Found');
   });
   it('400: bad request will be returned if the article_id is the wrong type', async () => {
     const {
