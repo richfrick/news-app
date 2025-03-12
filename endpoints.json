@@ -5,7 +5,7 @@
 
   "GET /api/articles": {
     "description": "retunrs an array of all articles. By default this will be in decending created_at order",
-    "queries": [],
+    "queries": ["sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {

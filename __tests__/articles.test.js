@@ -56,6 +56,263 @@ describe('Articles Endpoint', () => {
       });
     });
 
+    it('200: sort by article_id will return a list in decending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?sort_by=article_id');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({ key: 'article_id', descending: true });
+      expect(articles[0]).toEqual({
+        article_id: 13,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'butter_bridge',
+        comment_count: 0,
+        created_at: '2020-10-11T11:24:00.000Z',
+        title: 'Another article about Mitch',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+
+    it('200: sort by title will return a list in decending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?sort_by=title');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({ key: 'title', descending: true });
+      expect(articles[0]).toEqual({
+        article_id: 7,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'icellusedkars',
+        comment_count: 0,
+        created_at: '2020-01-07T14:08:00.000Z',
+        title: 'Z',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+
+    it('200: sort by topic will return a list in descending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?sort_by=topic');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({ key: 'topic', descending: true });
+      expect(articles[0]).toEqual({
+        article_id: 8,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'icellusedkars',
+        comment_count: 0,
+        created_at: '2020-04-17T01:08:00.000Z',
+        title: 'Does Mitch predate civilisation?',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+
+    it('200: sort by author will return a list in descending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?sort_by=author');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({ key: 'author', descending: true });
+      expect(articles[0]).toEqual({
+        article_id: 4,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'rogersop',
+        comment_count: 0,
+        created_at: '2020-05-06T01:14:00.000Z',
+        title: 'Student SUES Mitch!',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+
+    it('200: sort by created_at will return a list in descending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?sort_by=created_at');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({ key: 'created_at', descending: true });
+      expect(articles[0]).toEqual({
+        article_id: 3,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'icellusedkars',
+        comment_count: 2,
+        created_at: '2020-11-03T09:12:00.000Z',
+        title: 'Eight pug gifs that remind me of mitch',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+
+    it('200: sort by votes will return a list in decending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?sort_by=votes');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({ key: 'votes', descending: true });
+      expect(articles[0]).toEqual({
+        article_id: 1,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'butter_bridge',
+        comment_count: 11,
+        created_at: '2020-07-09T20:11:00.000Z',
+        title: 'Living in the shadow of a great man',
+        topic: 'mitch',
+        votes: 100,
+      });
+    });
+
+    it('200: sort by article_img_url will return a list in decending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?sort_by=article_img_url');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({
+        key: 'article_img_url',
+        descending: true,
+      });
+      expect(articles[0]).toEqual({
+        article_id: 4,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'rogersop',
+        comment_count: 0,
+        created_at: '2020-05-06T01:14:00.000Z',
+        title: 'Student SUES Mitch!',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+
+    it('200: providing order=asc ONLY will return a list sorted by created_at in ascending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?order=asc');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({
+        key: 'created_at',
+        descending: false,
+      });
+      expect(articles[0]).toEqual({
+        article_id: 7,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'icellusedkars',
+        comment_count: 0,
+        created_at: '2020-01-07T14:08:00.000Z',
+        title: 'Z',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+
+    it('200: providing order=desc ONLY will return a list sorted by created_at in descending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?order=desc');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({
+        key: 'created_at',
+        descending: true,
+      });
+      expect(articles[0]).toEqual({
+        article_id: 3,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'icellusedkars',
+        comment_count: 2,
+        created_at: '2020-11-03T09:12:00.000Z',
+        title: 'Eight pug gifs that remind me of mitch',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+
+    it('200: articles can be sorted by any valid coulumn in ascending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?sort_by=author&order=asc');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({
+        key: 'author',
+        descending: false,
+      });
+      expect(articles[0]).toEqual({
+        article_id: 1,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'butter_bridge',
+        comment_count: 11,
+        created_at: '2020-07-09T20:11:00.000Z',
+        title: 'Living in the shadow of a great man',
+        topic: 'mitch',
+        votes: 100,
+      });
+    });
+
+    it("400: attempting to sort by a column that doesn't exist in articles will throw a bad request error", async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).get('/api/articles?sort_by=foo');
+      expect(status).toBe(400);
+      expect(msg).toBe('Bad Request, invalid query param or value');
+    });
+
+    it('400: passing an int to sort by will return a bad request', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).get('/api/articles?sort_by=123');
+      expect(status).toBe(400);
+      expect(msg).toBe('Bad Request, invalid query param or value');
+    });
+
+    it('400: passing a string onto order that is not asc or desc will return a bad request', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).get('/api/articles?order=foo');
+      expect(status).toBe(400);
+      expect(msg).toBe('Bad Request, invalid query param or value');
+    });
+    it('400: passing an int onto order will return a bad request', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).get('/api/articles?order=123');
+      expect(status).toBe(400);
+      expect(msg).toBe('Bad Request, invalid query param or value');
+    });
+
     it('200: body does not appear in any of the response objects', async () => {
       const {
         status,
