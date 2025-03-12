@@ -23,7 +23,7 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(200);
       expect(articles.length).toBe(13);
       articles.forEach((article) => {
-        expect(article).toMatchObject({
+        expect(article).toEqual({
           author: expect.any(String),
           title: expect.any(String),
           article_id: expect.any(Number),
@@ -31,8 +31,8 @@ describe('Articles Endpoint', () => {
           created_at: expect.any(String),
           votes: expect.any(Number),
           comment_count: expect.any(Number),
+          article_img_url: expect.any(String),
         });
-        expect([null, expect.any(String)]).toContain(article.article_img_url);
       });
     });
 
@@ -51,7 +51,8 @@ describe('Articles Endpoint', () => {
         created_at: '2020-11-03T09:12:00.000Z',
         votes: 0,
         comment_count: 2,
-        article_img_url: null,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
       });
     });
 
@@ -74,7 +75,7 @@ describe('Articles Endpoint', () => {
         body: { article },
       } = await request(app).get('/api/articles/2');
       expect(status).toBe(200);
-      expect(article).toMatchObject({
+      expect(article).toEqual({
         article_id: expect.any(Number),
         title: expect.any(String),
         topic: expect.any(String),
@@ -82,8 +83,8 @@ describe('Articles Endpoint', () => {
         body: expect.any(String),
         created_at: expect.any(String),
         votes: expect.any(Number),
+        article_img_url: expect.any(String),
       });
-      expect([null, expect.any(String)]).toContain(article.article_img_url);
     });
 
     it('200: an individual article can be retrieved by id', async () => {
@@ -101,7 +102,8 @@ describe('Articles Endpoint', () => {
         body: 'Call me Mitchell. Some years ago..',
         created_at: '2020-10-16T05:03:00.000Z',
         votes: 0,
-        article_img_url: null,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
       });
     });
 
@@ -133,7 +135,8 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(200);
       expect(article).toEqual({
         article_id: 3,
-        article_img_url: null,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
         author: 'icellusedkars',
         body: 'some gifs',
         created_at: '2020-11-03T09:12:00.000Z',
@@ -150,7 +153,8 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(200);
       expect(article).toEqual({
         article_id: 3,
-        article_img_url: null,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
         author: 'icellusedkars',
         body: 'some gifs',
         created_at: '2020-11-03T09:12:00.000Z',
@@ -167,7 +171,8 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(200);
       expect(article).toEqual({
         article_id: 3,
-        article_img_url: null,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
         author: 'icellusedkars',
         body: 'some gifs',
         created_at: '2020-11-03T09:12:00.000Z',
@@ -194,20 +199,15 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(400);
       expect(msg).toEqual('Bad Request: invalid request body');
     });
-    it(
-      '404: attempting to update an article that does not exist throws a Not Found error',
-      async () => {
-        const {
-          status,
-          body: { msg },
-        } = await request(app).patch('/api/articles/99').send({ votes: 1 });
-        expect(status).toBe(404);
-        expect(msg).toEqual('Not Found');
-      }
-    );
-    it(
-      '400: passing an article_id of the wrong type throws a bad request error'
-    , async () => {
+    it('404: attempting to update an article that does not exist throws a Not Found error', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).patch('/api/articles/99').send({ votes: 1 });
+      expect(status).toBe(404);
+      expect(msg).toEqual('Not Found');
+    });
+    it('400: passing an article_id of the wrong type throws a bad request error', async () => {
       const {
         status,
         body: { msg },
