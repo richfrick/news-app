@@ -229,3 +229,9 @@ describe('POST: /api/articles/:article_id/comments', () => {
     expect(msg).toEqual('Bad Request: invalid request body');
   });
 });
+
+describe('DELETE: /api/comments/:comment_id', () => {
+  it.todo('204: comment is deleted when provided a comment_id that exists');
+  it.todo('404: not found returned when the comment_id does not exist');
+  it.todo('400: bad request returned if comment_id is not an int');
+});
