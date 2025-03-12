@@ -1,4 +1,3 @@
-const format = require('pg-format');
 const db = require('../db/connection');
 const { checkExists } = require('../db/seeds/utils');
 
@@ -36,11 +35,8 @@ exports.updateArticleVotes = async (id, votes) => {
   }
 
   await checkExists('articles', 'article_id', id);
-  const queryStr = format(
-    `UPDATE articles SET votes = votes + %L WHERE article_id = %L RETURNING *`,
-    votes,
-    id
-  );
-  const { rows } = await db.query(queryStr);
+  const { rows } = await db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`,
+    [votes,
+    id]);
   return rows[0];
 };

@@ -131,7 +131,9 @@ describe('Articles Endpoint', () => {
       const {
         status,
         body: { article },
-      } = await request(app).patch('/api/articles/3').send({ votes: 1 });
+      } = await request(app)
+        .patch('/api/articles/3')
+        .send({ addOrRemoveVotes: 1 });
       expect(status).toBe(200);
       expect(article).toEqual({
         article_id: 3,
@@ -149,7 +151,9 @@ describe('Articles Endpoint', () => {
       const {
         status,
         body: { article },
-      } = await request(app).patch('/api/articles/3').send({ votes: -2 });
+      } = await request(app)
+        .patch('/api/articles/3')
+        .send({ addOrRemoveVotes: -2 });
       expect(status).toBe(200);
       expect(article).toEqual({
         article_id: 3,
@@ -163,11 +167,13 @@ describe('Articles Endpoint', () => {
         votes: -2,
       });
     });
-    it('200: adding 0 votes will not change the vote count', async () => {
+    it('200: adding 0 to addOrRemoveVotes will not change the vote count', async () => {
       const {
         status,
         body: { article },
-      } = await request(app).patch('/api/articles/3').send({ votes: 0 });
+      } = await request(app)
+        .patch('/api/articles/3')
+        .send({ addOrRemoveVotes: 0 });
       expect(status).toBe(200);
       expect(article).toEqual({
         article_id: 3,
@@ -181,11 +187,13 @@ describe('Articles Endpoint', () => {
         votes: 0,
       });
     });
-    it('400: passing a non integer in votes throws a bad request error', async () => {
+    it('400: passing a non integer in addOrRemoveVotes throws a bad request error', async () => {
       const {
         status,
         body: { msg },
-      } = await request(app).patch('/api/articles/3').send({ votes: null });
+      } = await request(app)
+        .patch('/api/articles/3')
+        .send({ addOrRemoveVotes: null });
       expect(status).toBe(400);
       expect(msg).toEqual('Bad Request: invalid request body');
     });
@@ -203,7 +211,9 @@ describe('Articles Endpoint', () => {
       const {
         status,
         body: { msg },
-      } = await request(app).patch('/api/articles/99').send({ votes: 1 });
+      } = await request(app)
+        .patch('/api/articles/99')
+        .send({ addOrRemoveVotes: 1 });
       expect(status).toBe(404);
       expect(msg).toEqual('Not Found');
     });
@@ -211,7 +221,9 @@ describe('Articles Endpoint', () => {
       const {
         status,
         body: { msg },
-      } = await request(app).patch('/api/articles/foo').send({ votes: 1 });
+      } = await request(app)
+        .patch('/api/articles/foo')
+        .send({ addOrRemoveVotes: 1 });
       expect(status).toBe(400);
       expect(msg).toEqual('Bad Request');
     });

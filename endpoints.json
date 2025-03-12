@@ -48,7 +48,7 @@
     "description": "Can be used to increment or decrecee the number of votes on an article",
     "queries": [],
     "exampleRequest": {
-      "votes": 20
+      "addOrRemoveVotes": 20
     },
     "exampleResponse": {
       "article": [
