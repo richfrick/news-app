@@ -1,3 +1,4 @@
+const format = require('pg-format');
 const db = require('../db/connection');
 
 exports.fetchArticles = async () => {
@@ -22,5 +23,15 @@ exports.fetchArticleById = async (id) => {
     return Promise.reject({ status: 404, msg: `Not Found: article_id ${id}` });
   }
 
+  return rows[0];
+};
+
+exports.updateArticleVotes = async (id, votes) => {
+  const queryStr = format(
+    `UPDATE articles SET votes = votes + %L WHERE article_id = %L RETURNING *`,
+    votes,
+    id
+  );
+  const { rows } = await db.query(queryStr);
   return rows[0];
 };

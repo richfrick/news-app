@@ -1,4 +1,8 @@
-const { fetchArticleById, fetchArticles } = require('../models/articles.model');
+const {
+  fetchArticleById,
+  fetchArticles,
+  updateArticleVotes,
+} = require('../models/articles.model');
 
 exports.getArticles = async (request, response, next) => {
   try {
@@ -14,6 +18,19 @@ exports.getArticlesById = async (request, response, next) => {
     const { article_id } = request.params;
     const article = await fetchArticleById(article_id);
     response.status(200).send({ article });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.patchArticle = async (request, response, next) => {
+  try {
+    const {
+      params: { article_id },
+      body: { votes },
+    } = request;
+    const updatedArticle = await updateArticleVotes(article_id, votes);
+    response.status(200).send({ article: updatedArticle });
   } catch (error) {
     next(error);
   }

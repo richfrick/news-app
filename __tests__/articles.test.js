@@ -125,11 +125,58 @@ describe('Articles Endpoint', () => {
   });
 
   describe('PATCH: /api/articles/:article_id', () => {
-    it.todo(
-      '200: votes can be incremented by x and returns the updated article'
-    );
-    it.todo('200: votes can be decreaced by x and returns the updated article');
-    it.todo('200: adding 0 votes will not change the vote count');
+    it('200: votes can be incremented by x and returns the updated article', async () => {
+      const {
+        status,
+        body: { article },
+      } = await request(app).patch('/api/articles/3').send({ votes: 1 });
+      expect(status).toBe(200);
+      expect(article).toEqual({
+        article_id: 3,
+        article_img_url: null,
+        author: 'icellusedkars',
+        body: 'some gifs',
+        created_at: '2020-11-03T09:12:00.000Z',
+        title: 'Eight pug gifs that remind me of mitch',
+        topic: 'mitch',
+        votes: 1,
+      });
+    });
+    it('200: votes can be decreaced by x and returns the updated article', async () => {
+      const {
+        status,
+        body: { article },
+      } = await request(app).patch('/api/articles/3').send({ votes: -2 });
+      expect(status).toBe(200);
+      expect(article).toEqual({
+        article_id: 3,
+        article_img_url: null,
+        author: 'icellusedkars',
+        body: 'some gifs',
+        created_at: '2020-11-03T09:12:00.000Z',
+        title: 'Eight pug gifs that remind me of mitch',
+        topic: 'mitch',
+        votes: -2,
+      });
+    });
+    it('200: adding 0 votes will not change the vote count', async () => {
+      const {
+        status,
+        body: { article },
+      } = await request(app).patch('/api/articles/3').send({ votes: 0 });
+      expect(status).toBe(200);
+      expect(article).toEqual({
+        article_id: 3,
+        article_img_url: null,
+        author: 'icellusedkars',
+        body: 'some gifs',
+        created_at: '2020-11-03T09:12:00.000Z',
+        title: 'Eight pug gifs that remind me of mitch',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+    it.todo('400: passing a non integer in votes throws a bad request error');
     it.todo(
       '400: attempting to update another part of the article throws a Bad Request error'
     );
