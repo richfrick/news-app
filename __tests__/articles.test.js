@@ -123,4 +123,97 @@ describe('Articles Endpoint', () => {
       expect(msg).toBe('Not Found: article_id 99');
     });
   });
+
+  describe('PATCH: /api/articles/:article_id', () => {
+    it('200: votes can be incremented by x and returns the updated article', async () => {
+      const {
+        status,
+        body: { article },
+      } = await request(app).patch('/api/articles/3').send({ votes: 1 });
+      expect(status).toBe(200);
+      expect(article).toEqual({
+        article_id: 3,
+        article_img_url: null,
+        author: 'icellusedkars',
+        body: 'some gifs',
+        created_at: '2020-11-03T09:12:00.000Z',
+        title: 'Eight pug gifs that remind me of mitch',
+        topic: 'mitch',
+        votes: 1,
+      });
+    });
+    it('200: votes can be decreaced by x and returns the updated article', async () => {
+      const {
+        status,
+        body: { article },
+      } = await request(app).patch('/api/articles/3').send({ votes: -2 });
+      expect(status).toBe(200);
+      expect(article).toEqual({
+        article_id: 3,
+        article_img_url: null,
+        author: 'icellusedkars',
+        body: 'some gifs',
+        created_at: '2020-11-03T09:12:00.000Z',
+        title: 'Eight pug gifs that remind me of mitch',
+        topic: 'mitch',
+        votes: -2,
+      });
+    });
+    it('200: adding 0 votes will not change the vote count', async () => {
+      const {
+        status,
+        body: { article },
+      } = await request(app).patch('/api/articles/3').send({ votes: 0 });
+      expect(status).toBe(200);
+      expect(article).toEqual({
+        article_id: 3,
+        article_img_url: null,
+        author: 'icellusedkars',
+        body: 'some gifs',
+        created_at: '2020-11-03T09:12:00.000Z',
+        title: 'Eight pug gifs that remind me of mitch',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+    it('400: passing a non integer in votes throws a bad request error', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).patch('/api/articles/3').send({ votes: null });
+      expect(status).toBe(400);
+      expect(msg).toEqual('Bad Request: invalid request body');
+    });
+    it('400: attempting to update another part of the article throws a Bad Request error', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app)
+        .patch('/api/articles/3')
+        .send({ author: 'rogersop' });
+      expect(status).toBe(400);
+      expect(msg).toEqual('Bad Request: invalid request body');
+    });
+    it(
+      '404: attempting to update an article that does not exist throws a Not Found error',
+      async () => {
+        const {
+          status,
+          body: { msg },
+        } = await request(app).patch('/api/articles/99').send({ votes: 1 });
+        expect(status).toBe(404);
+        expect(msg).toEqual('Not Found');
+      }
+    );
+    it(
+      '400: passing an article_id of the wrong type throws a bad request error'
+    , async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).patch('/api/articles/foo').send({ votes: 1 });
+      expect(status).toBe(400);
+      expect(msg).toEqual('Bad Request');
+    });
+  });
 });

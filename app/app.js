@@ -9,6 +9,7 @@ const { getTopics } = require('../controllers/topics.controllers');
 const {
   getArticlesById,
   getArticles,
+  patchArticle,
 } = require('../controllers/articles.contoller');
 const {
   getCommentsByArticleId,
@@ -31,6 +32,8 @@ app.get('/api/articles/:article_id', getArticlesById);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 
 app.post('/api/articles/:article_id/comments', postCommentbyArticleId);
+
+app.patch('/api/articles/:article_id', patchArticle);
 
 app.all('/*', (_, response) => {
   response.status(404).send({ msg: 'route not found' });
