@@ -231,7 +231,34 @@ describe('POST: /api/articles/:article_id/comments', () => {
 });
 
 describe('DELETE: /api/comments/:comment_id', () => {
-  it.todo('204: comment is deleted when provided a comment_id that exists');
-  it.todo('404: not found returned when the comment_id does not exist');
-  it.todo('400: bad request returned if comment_id is not an int');
+  it('204: comment is deleted when provided a comment_id that exists', async () => {
+    const { status, body } = await request(app).delete('/api/comments/3');
+    expect(status).toBe(204);
+    expect(body).toBeEmpty();
+
+    const {
+      body: { comments },
+    } = await request(app).get('/api/articles/1/comments');
+    expect(comments.length).toBe(10);
+  });
+
+  it('404: not found returned when the comment_id does not exist', async () => {
+    async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).delete('/api/comments/99');
+      expect(status).toBe(404);
+      expect(msg).toEqual('Not Found');
+    };
+  });
+
+  it('400: bad request returned if comment_id is not an int', async () => {
+    const {
+      status,
+      body: { msg },
+    } = await request(app).delete('/api/comments/foo');
+    expect(status).toBe(400);
+    expect(msg).toEqual('Bad Request');
+  });
 });
