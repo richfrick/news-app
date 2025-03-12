@@ -1,5 +1,6 @@
 const format = require('pg-format');
 const db = require('../db/connection');
+const { checkExists } = require('../db/seeds/utils');
 
 exports.fetchArticles = async () => {
   const { rows } = await db.query(
@@ -27,6 +28,14 @@ exports.fetchArticleById = async (id) => {
 };
 
 exports.updateArticleVotes = async (id, votes) => {
+  if (typeof votes != 'number') {
+    return Promise.reject({
+      status: 400,
+      msg: 'Bad Request: invalid request body',
+    });
+  }
+
+  await checkExists('articles', 'article_id', id);
   const queryStr = format(
     `UPDATE articles SET votes = votes + %L WHERE article_id = %L RETURNING *`,
     votes,

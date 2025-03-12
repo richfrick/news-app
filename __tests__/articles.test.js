@@ -176,15 +176,44 @@ describe('Articles Endpoint', () => {
         votes: 0,
       });
     });
-    it.todo('400: passing a non integer in votes throws a bad request error');
-    it.todo(
-      '400: attempting to update another part of the article throws a Bad Request error'
+    it('400: passing a non integer in votes throws a bad request error', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).patch('/api/articles/3').send({ votes: null });
+      expect(status).toBe(400);
+      expect(msg).toEqual('Bad Request: invalid request body');
+    });
+    it('400: attempting to update another part of the article throws a Bad Request error', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app)
+        .patch('/api/articles/3')
+        .send({ author: 'rogersop' });
+      expect(status).toBe(400);
+      expect(msg).toEqual('Bad Request: invalid request body');
+    });
+    it(
+      '404: attempting to update an article that does not exist throws a Not Found error',
+      async () => {
+        const {
+          status,
+          body: { msg },
+        } = await request(app).patch('/api/articles/99').send({ votes: 1 });
+        expect(status).toBe(404);
+        expect(msg).toEqual('Not Found');
+      }
     );
-    it.todo(
-      '404: attempting to update an article that does not exist throws a Not Found error'
-    );
-    it.todo(
+    it(
       '400: passing an article_id of the wrong type throws a bad request error'
-    );
+    , async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).patch('/api/articles/foo').send({ votes: 1 });
+      expect(status).toBe(400);
+      expect(msg).toEqual('Bad Request');
+    });
   });
 });
