@@ -156,14 +156,7 @@ describe('create lookup', () => {
 });
 
 describe('check exists', () => {
-  it.skip('404: returns an error if column value is not found', async () => {
-    const {
-      status,
-      body: { msg },
-    } = await checkExists('articles', 'article_id', 99);
-    expect(status).toBe(404);
-    expect(msg).toEqual('Not Found');
-  });
+  it.todo('404: returns an error if column value is not found');
   it.todo('404: returns an error if column is not found');
   it.todo('404: returns an error if table value is not found');
   it.todo('404: returns result from db query when it is successful');
