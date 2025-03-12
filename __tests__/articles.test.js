@@ -123,4 +123,21 @@ describe('Articles Endpoint', () => {
       expect(msg).toBe('Not Found: article_id 99');
     });
   });
+
+  describe('PATCH: /api/articles/:article_id', () => {
+    it.todo(
+      '200: votes can be incremented by x and returns the updated article'
+    );
+    it.todo('200: votes can be decreaced by x and returns the updated article');
+    it.todo('200: adding 0 votes will not change the vote count');
+    it.todo(
+      '400: attempting to update another part of the article throws a Bad Request error'
+    );
+    it.todo(
+      '404: attempting to update an article that does not exist throws a Not Found error'
+    );
+    it.todo(
+      '400: passing an article_id of the wrong type throws a bad request error'
+    );
+  });
 });
