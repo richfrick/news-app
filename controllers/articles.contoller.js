@@ -27,9 +27,12 @@ exports.patchArticle = async (request, response, next) => {
   try {
     const {
       params: { article_id },
-      body: { votes },
+      body: { addOrRemoveVotes },
     } = request;
-    const updatedArticle = await updateArticleVotes(article_id, votes);
+    const updatedArticle = await updateArticleVotes(
+      article_id,
+      addOrRemoveVotes
+    );
     response.status(200).send({ article: updatedArticle });
   } catch (error) {
     next(error);

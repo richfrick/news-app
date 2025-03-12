@@ -84,7 +84,7 @@ function seedArticles(articleData) {
       article.body,
       createdAtFormatted.created_at,
       article.votes || 0,
-      article.article_img,
+      article.article_img_url,
     ];
   });
   const articlesInsertQuery = format(
