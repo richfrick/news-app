@@ -101,13 +101,35 @@ describe('POST: /api/articles/:article_id/comments', () => {
         body: 'foo bar',
       });
     expect(status).toBe(201);
-    expect(body).toEqual({ comment: 'foo bar' });
+    expect(body.comment[0].body).toEqual('foo bar');
   });
 
   it('201: new comment will assign correct values to comment_id, votes, created_at, author, body, article_id', async () => {
     await request(app).post('/api/articles/2/comments').send({
       author: 'icellusedkars',
       body: 'foo bar',
+    });
+    const {
+      status,
+      body: { comments },
+    } = await request(app).get('/api/articles/2/comments');
+    expect(status).toBe(200);
+    expect(comments.length).toBe(1);
+    expect(comments[0]).toEqual({
+      comment_id: 19,
+      votes: 0,
+      created_at: expect.any(String),
+      author: 'icellusedkars',
+      body: 'foo bar',
+      article_id: 2,
+    });
+  });
+
+  it('201: new comment with extra keys in the request body will still create the comment and ignore the extra key', async () => {
+    await request(app).post('/api/articles/2/comments').send({
+      author: 'icellusedkars',
+      body: 'foo bar',
+      test: 'test',
     });
     const {
       status,

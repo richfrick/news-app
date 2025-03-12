@@ -20,7 +20,7 @@ exports.postCommentbyArticleId = async (request, response, next) => {
       body,
     } = request;
     const newComment = await createNewComment(article_id, body);
-    response.status(201).send({ comment: newComment[0].body });
+    response.status(201).send({ comment: newComment});
   } catch (error) {
     next(error);
   }
