@@ -2,13 +2,7 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
-  "GET /api/topics": {
-    "description": "serves an array of all topics",
-    "queries": [],
-    "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
-    }
-  },
+
   "GET /api/articles": {
     "description": "retunrs an array of all articles. By default this will be in decending created_at order",
     "queries": [],
@@ -99,5 +93,21 @@
     "description": "deletes a comment",
     "queries": [],
     "exampleResponse": {}
+  },
+  "GET /api/topics": {
+    "description": "serves an array of all topics",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [{ "slug": "football", "description": "Footie!" }]
+    }
+  },
+  "GET /api/users": {
+    "description": "returns an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [
+        { "username": "foo", "name": "foo bar", "avatar_url": "fooBar.url" }
+      ]
+    }
   }
 }
