@@ -406,14 +406,19 @@ describe('Articles Endpoint', () => {
       });
     });
 
-    it('200: an individual article can be retrieved by id and will contain author, title, article_id, body, topic, created_at, votes, article_img_url', async () => {
+    it('200: an article with comments returns the correct count', async () => {
+      await request(app).post('/api/articles/2/comments').send({
+        author: 'icellusedkars',
+        body: 'foo bar',
+      });
       const {
         status,
-        body: { article },
-      } = await request(app).get('/api/articles/1');
+        body: {
+          article: { comment_count },
+        },
+      } = await request(app).get('/api/articles/2');
       expect(status).toBe(200);
-      expect([article].length).toBe(1);
-      expect(article.comment_count).toBe(11);
+      expect(comment_count).toBe(1);
     });
 
     it('400: bad request should be returned when an non integer is used for article_id', async () => {
