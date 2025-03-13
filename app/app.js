@@ -25,6 +25,10 @@ app.get('/api', (request, response) => {
   response.status(200).send({ endpoints });
 });
 
+app.get('/api/healthz', (request, response) => {
+  response.status(200).send('all good');
+});
+
 app.get('/api/articles', getArticles);
 
 app.get('/api/articles/:article_id', getArticlesById);
