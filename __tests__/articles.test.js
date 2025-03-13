@@ -36,6 +36,17 @@ describe('Articles Endpoint', () => {
       });
     });
 
+    it('200: body does not appear in any of the response objects', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles');
+      expect(status).toBe(200);
+      articles.every((article) =>
+        expect(article.hasOwnProperty('body')).toBe(false)
+      );
+    });
+
     it('200: articles will be sorted in decending date order by default', async () => {
       const {
         status,
@@ -304,6 +315,7 @@ describe('Articles Endpoint', () => {
       expect(status).toBe(400);
       expect(msg).toBe('Bad Request, invalid query param or value');
     });
+
     it('400: passing an int onto order will return a bad request', async () => {
       const {
         status,
@@ -313,15 +325,42 @@ describe('Articles Endpoint', () => {
       expect(msg).toBe('Bad Request, invalid query param or value');
     });
 
-    it('200: body does not appear in any of the response objects', async () => {
+    it('200: filtering by a topic with articles will return results', async () => {
       const {
         status,
         body: { articles },
-      } = await request(app).get('/api/articles');
+      } = await request(app).get('/api/articles?topic=cats');
       expect(status).toBe(200);
-      articles.every((article) =>
-        expect(article.hasOwnProperty('body')).toBe(false)
-      );
+      expect(articles.length).toBe(1);
+      expect(articles[0]).toEqual({
+        article_id: 5,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'rogersop',
+        comment_count: 2,
+        created_at: '2020-08-03T13:14:00.000Z',
+        title: 'UNCOVERED: catspiracy to bring down democracy',
+        topic: 'cats',
+        votes: 0,
+      });
+    });
+
+    it('200: filtering by a topic with no articles will return an empty array', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?topic=paper');
+      expect(status).toBe(200);
+      expect(articles).toEqual([])
+    });
+
+    it('404: providing an incorrect topic throw a not found error', async () => {
+      const {
+        status,
+        body: { msg },
+      } = await request(app).get('/api/articles?topic=123');
+      expect(status).toBe(404);
+      expect(msg).toEqual('Not Found');
     });
   });
 
