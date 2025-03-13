@@ -56,7 +56,11 @@ In order to use this you will need define environment variables for connecting t
 
 \*\*gitignore will exclude these
 
-## 🚀 Testing
+## 🚀 Usage
+
+For a list of endponts and direction on their use consult the [/api](http://localhost:9090/api) enpoint of the running service
+
+## 📝 Testing
 
 The repo has an number of unit & integration tests which you can run should you want to check the impact of any changes you have made OR in the event you are a fan of testing.
 
