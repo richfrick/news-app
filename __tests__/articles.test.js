@@ -316,6 +316,26 @@ describe('Articles Endpoint', () => {
       expect(msg).toBe('Bad Request, invalid query param or value');
     });
 
+    it('200: an invalid query param will be ignored and the default query is used', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?foo=bar');
+      expect(status).toBe(200);
+      expect(articles).toBeSorted({ key: 'created_at', descending: true });
+      expect(articles[0]).toEqual({
+        author: 'icellusedkars',
+        title: 'Eight pug gifs that remind me of mitch',
+        article_id: 3,
+        topic: 'mitch',
+        created_at: '2020-11-03T09:12:00.000Z',
+        votes: 0,
+        comment_count: 2,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+      });
+    });
+
     it('400: passing an int onto order will return a bad request', async () => {
       const {
         status,
@@ -351,7 +371,7 @@ describe('Articles Endpoint', () => {
         body: { articles },
       } = await request(app).get('/api/articles?topic=paper');
       expect(status).toBe(200);
-      expect(articles).toEqual([])
+      expect(articles).toEqual([]);
     });
 
     it('404: providing an incorrect topic throw a not found error', async () => {
