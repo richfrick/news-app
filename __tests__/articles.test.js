@@ -316,6 +316,26 @@ describe('Articles Endpoint', () => {
       expect(msg).toBe('Bad Request, invalid query param or value');
     });
 
+    it('200: an invalid query param will be ignored and the default query is used', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?foo=bar');
+      expect(status).toBe(200);
+      expect(articles).toBeSorted({ key: 'created_at', descending: true });
+      expect(articles[0]).toEqual({
+        author: 'icellusedkars',
+        title: 'Eight pug gifs that remind me of mitch',
+        article_id: 3,
+        topic: 'mitch',
+        created_at: '2020-11-03T09:12:00.000Z',
+        votes: 0,
+        comment_count: 2,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+      });
+    });
+
     it('400: passing an int onto order will return a bad request', async () => {
       const {
         status,
@@ -351,7 +371,7 @@ describe('Articles Endpoint', () => {
         body: { articles },
       } = await request(app).get('/api/articles?topic=paper');
       expect(status).toBe(200);
-      expect(articles).toEqual([])
+      expect(articles).toEqual([]);
     });
 
     it('404: providing an incorrect topic throw a not found error', async () => {
@@ -365,25 +385,7 @@ describe('Articles Endpoint', () => {
   });
 
   describe('GET: /api/articles/:article_id', () => {
-    it('200: article object will contain author, title, article_id, body, topic, created_at, votes, article_img_url', async () => {
-      const {
-        status,
-        body: { article },
-      } = await request(app).get('/api/articles/2');
-      expect(status).toBe(200);
-      expect(article).toEqual({
-        article_id: expect.any(Number),
-        title: expect.any(String),
-        topic: expect.any(String),
-        author: expect.any(String),
-        body: expect.any(String),
-        created_at: expect.any(String),
-        votes: expect.any(Number),
-        article_img_url: expect.any(String),
-      });
-    });
-
-    it('200: an individual article can be retrieved by id', async () => {
+    it('200: an individual article can be retrieved by id and will contain author, title, article_id, body, topic, created_at, votes, article_img_url', async () => {
       const {
         status,
         body: { article },
@@ -392,15 +394,31 @@ describe('Articles Endpoint', () => {
       expect([article].length).toBe(1);
       expect(article).toEqual({
         article_id: 2,
-        title: 'Sony Vaio; or, The Laptop',
-        topic: 'mitch',
-        author: 'icellusedkars',
-        body: 'Call me Mitchell. Some years ago..',
-        created_at: '2020-10-16T05:03:00.000Z',
-        votes: 0,
         article_img_url:
           'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'icellusedkars',
+        body: 'Call me Mitchell. Some years ago..',
+        comment_count: 0,
+        created_at: '2020-10-16T05:03:00.000Z',
+        title: 'Sony Vaio; or, The Laptop',
+        topic: 'mitch',
+        votes: 0,
       });
+    });
+
+    it('200: an article with comments returns the correct count', async () => {
+      await request(app).post('/api/articles/2/comments').send({
+        author: 'icellusedkars',
+        body: 'foo bar',
+      });
+      const {
+        status,
+        body: {
+          article: { comment_count },
+        },
+      } = await request(app).get('/api/articles/2');
+      expect(status).toBe(200);
+      expect(comment_count).toBe(1);
     });
 
     it('400: bad request should be returned when an non integer is used for article_id', async () => {
