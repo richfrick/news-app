@@ -3,7 +3,7 @@ const db = require('../db/connection');
 const { checkExists } = require('../db/seeds/utils');
 
 exports.fetchArticles = async (queryParams) => {
-  const { sort_by, order } = queryParams;
+  const { sort_by, order, topic } = queryParams;
   const validSortParams = [
     'article_id',
     'title',
@@ -30,19 +30,35 @@ exports.fetchArticles = async (queryParams) => {
     COUNT(comments.comment_id)::INT as comment_count
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id 
-    GROUP BY articles.article_id`;
+    `;
+
+  if (topic) {
+    await checkExists('topics', 'slug', topic);
+    queryStr += format(` WHERE topic = '%s'`, topic);
+  }
 
   if (!sort_by && order) {
-    queryStr += format(' ORDER BY created_at %s;', order);
+    queryStr += format(
+      ' GROUP BY articles.article_id ORDER BY created_at %s;',
+      order
+    );
   } else if (sort_by && !order) {
-    queryStr += format(' ORDER BY %s DESC;', sort_by);
+    queryStr += format(
+      ' GROUP BY articles.article_id ORDER BY %s DESC;',
+      sort_by
+    );
   } else if (sort_by && order) {
-    queryStr += format(' ORDER BY %s %s;', sort_by, order);
+    queryStr += format(
+      ' GROUP BY articles.article_id ORDER BY %s %s;',
+      sort_by,
+      order
+    );
   } else {
-    queryStr += ' ORDER BY created_at DESC;';
+    queryStr += ' GROUP BY articles.article_id ORDER BY created_at DESC ;';
   }
 
   const { rows } = await db.query(queryStr);
+
   return rows;
 };
 
