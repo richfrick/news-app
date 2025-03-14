@@ -25,10 +25,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check PostgreSQL Status
+        run: |
+          ps aux | grep postgres
+          netstat -an | grep 5432
+
       - name: Run tests when postgres is ready
         run: |
-          echo "Waiting for PostgreSQL to start..."
-          sleep 10
           for i in {1..10}; do
             pg_isready -h localhost -U test_user -d nc_news_test && exit 0
             echo "Waiting for database..."
