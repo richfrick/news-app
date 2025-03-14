@@ -22,22 +22,32 @@ jobs:
           postgres user: 'test_user'
           postgres password: 'password'
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Check PostgreSQL Status
         run: |
           ps aux | grep postgres
           netstat -an | grep 5432
 
-      - name: Run tests when postgres is ready
+      - name: Wait for PostgreSQL to be ready
         run: |
+          echo "Waiting for PostgreSQL to start..."
+          sleep 10
           for i in {1..10}; do
             pg_isready -h localhost -U test_user -d nc_news_test && exit 0
             echo "Waiting for database..."
             sleep 3
           done
           exit 1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests when postgres is ready
+        env:
+          PGHOST: localhost
+          PGDATABASE: nc_news_test
+          PGUSER: test_user
+          PGPASSWORD: password
+        run: npm t
 
   deploy:
     runs-on: ubuntu-latest
