@@ -13,7 +13,7 @@ jobs:
 
   test:
     name: Test
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
@@ -35,7 +35,7 @@ jobs:
         run: PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password npm t
 
   deploy:
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout repo
