@@ -26,12 +26,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        env:
-          PGHOST: localhost
-          PGDATABASE: nc_news_test
-          PGUSER: test_user
-          PGPASSWORD: password
-        run: npm t
+        run: PGDATABASE=nc_news_test PGUSER=test_user PGPASSWORD=password npm t
 
   deploy:
     runs-on: ubuntu-latest
