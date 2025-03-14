@@ -6,7 +6,7 @@ on:
       - main
 jobs:
   greeting:
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Start Message
         run: echo 'Test & Deploy workflow starting'
