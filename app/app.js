@@ -26,7 +26,7 @@ app.get('/api', (request, response) => {
 });
 
 app.get('/api/healthz', (request, response) => {
-  response.status(200).send('all good');
+  response.status(200).send({msg: 'all good'});
 });
 
 app.get('/api/articles', getArticles);
