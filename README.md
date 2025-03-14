@@ -3,15 +3,21 @@
 ## Table of contents
 
 - [About](#-about)
-- [Pre-requsites](#-minimum-versions)
+- [Hosted version](#-hosted-version)
+- [Pre-requsites](#-pre-requsites)
 - [Getting started](#-getting-started)
-- [Testing](#testing)
-- [Useful features](#useful-features)
-- [Hosted version](#hosted-version)
+- [Testing](#-testing)
+- [Useful features](#-useful-features)
 
 ## 🚀 About
 
 A small news app that allows you post articles then interact with them via up or downvoting and leaving comments.
+
+## 📝 Hosted version
+
+Currently hosted on a free version of render which tears down after 15 mins on inactivity, so hitting this for the first time could take up to 50s to respond as the service spins back up.
+
+https://news-app-ugpw.onrender.com/api/
 
 ## 📚 Pre-requsites
 
@@ -20,7 +26,7 @@ Min Versions
 - [node v20 or above](https://nodejs.org/api/https.html)
 - [Postgres v17 or above](https://postgresapp.com/)
 
-## 📝 Getting started
+## 📚 Getting started
 
 In order to use this you will need define environment variables for connecting to the test and development databases we'll cover in the steps below. The rest of the setup will make use of pre-defined scripts.
 
@@ -73,7 +79,3 @@ As part of this the database will be seeded before each test to ensure tests are
 1. nodemon allows you to run the app and make changes without restarting it. To use this, in package.json update the "start" script to use nodemon
 
    `"start": "nodemon ./app/listen.js"`
-
-## 📚 Hosted version
-
-https://news-app-ugpw.onrender.com/api/
