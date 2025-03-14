@@ -27,16 +27,14 @@ jobs:
 
       - name: Run tests when postgres is ready
         run: |
+          echo "Waiting for PostgreSQL to start..."
+          sleep 10
           for i in {1..10}; do
             pg_isready -h localhost -U test_user -d nc_news_test && exit 0
             echo "Waiting for database..."
             sleep 3
           done
           exit 1
-
-      - name: Print PostgreSQL Logs
-        if: failure()
-        run: journalctl -u postgresql --no-pager | tail -n 50
 
   deploy:
     runs-on: ubuntu-latest
