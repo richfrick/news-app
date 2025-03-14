@@ -9,12 +9,11 @@ const {
 
 articlesRouter.get('/', getArticles);
 
-articlesRouter.get('/:article_id', getArticlesById);
+articlesRouter.route('/:article_id').get(getArticlesById).patch(patchArticle);
 
-articlesRouter.patch('/:article_id', patchArticle);
-
-articlesRouter.get('/:article_id/comments', getCommentsByArticleId);
-
-articlesRouter.post('/:article_id/comments', postCommentbyArticleId);
+articlesRouter
+  .route('/:article_id/comments')
+  .get(getCommentsByArticleId)
+  .post(postCommentbyArticleId);
 
 module.exports = articlesRouter;

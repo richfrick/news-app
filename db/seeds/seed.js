@@ -20,7 +20,6 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     await seedUsers(userData);
     const insertedArticleData = await seedArticles(articleData);
     await seedComments(commentData, insertedArticleData.rows);
-    console.log('Seeding Complete');
   } catch (error) {
     console.log('SEEDING FAILED:', error);
   }
