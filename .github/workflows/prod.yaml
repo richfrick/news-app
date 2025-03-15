@@ -15,9 +15,6 @@ jobs:
       - name: Check system timezone
         run: date +"%Z %z"
 
-      - name: Set system timezone to UTC
-        run: sudo timedatectl set-timezone UTC
-
       - name: Use Node.js
         uses: actions/setup-node@v2
 
@@ -27,11 +24,11 @@ jobs:
           postgresql db: 'nc_news_test'
           postgresql user: 'test_user'
           postgresql password: 'password'
-      
+
       - name: Set PostgreSQL timezone to UTC
         run: |
-          psql -U test_user -d nc_news_test -c "ALTER DATABASE nc_news_test SET timezone TO 'UTC';"
-          psql -U test_user -d nc_news_test -c "SHOW timezone;"
+          PGPASSWORD=password psql -h localhost -U test_user -d nc_news_test -c "ALTER DATABASE nc_news_test SET timezone TO 'UTC';"
+          PGPASSWORD=password psql -h localhost -U test_user -d nc_news_test -c "SHOW timezone;"
 
       - name: Install dependencies
         run: npm ci
