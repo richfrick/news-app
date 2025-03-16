@@ -3,21 +3,7 @@ const format = require('pg-format');
 
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
-  const date = new Date(created_at);
-  return {
-    created_at: new Date(
-      Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        date.getUTCHours(),
-        date.getUTCMinutes(),
-        date.getUTCSeconds(),
-        date.getUTCMilliseconds()
-      )
-    ),
-    ...otherProperties,
-  };
+  return { created_at: new Date(created_at), ...otherProperties };
 };
 
 exports.formatTopicsSeedingData = (topicData) => {

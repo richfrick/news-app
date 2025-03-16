@@ -24,4 +24,6 @@ const config =
 
 const db = new Pool(config);
 
+//db.query("SET timezone TO 'UTC';");
+
 module.exports = db;
