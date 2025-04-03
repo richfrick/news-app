@@ -12,7 +12,7 @@ exports.fetchArticles = async (queryParams) => {
     'body',
     'created_at',
     'votes',
-    'article_img_url',
+    'comment_count',
   ];
   const validOrders = ['asc', 'desc'];
 

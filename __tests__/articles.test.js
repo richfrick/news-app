@@ -151,6 +151,27 @@ describe('Articles Endpoint', () => {
       });
     });
 
+    it.skip('200: sort by comment_count will return a list in descending order', async () => {
+      const {
+        status,
+        body: { articles },
+      } = await request(app).get('/api/articles?sort_by=commment_count');
+      expect(status).toBe(200);
+      expect(articles.length).toBe(13);
+      expect(articles).toBeSorted({ key: 'author', descending: true });
+      expect(articles[0]).toEqual({
+        article_id: 4,
+        article_img_url:
+          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        author: 'rogersop',
+        comment_count: 0,
+        created_at: '2020-05-06T01:14:00.000Z',
+        title: 'Student SUES Mitch!',
+        topic: 'mitch',
+        votes: 0,
+      });
+    });
+
     it.skip('200: sort by created_at will return a list in descending order', async () => {
       const {
         status,
@@ -190,30 +211,6 @@ describe('Articles Endpoint', () => {
         title: 'Living in the shadow of a great man',
         topic: 'mitch',
         votes: 100,
-      });
-    });
-
-    it.skip('200: sort by article_img_url will return a list in decending order', async () => {
-      const {
-        status,
-        body: { articles },
-      } = await request(app).get('/api/articles?sort_by=article_img_url');
-      expect(status).toBe(200);
-      expect(articles.length).toBe(13);
-      expect(articles).toBeSorted({
-        key: 'article_img_url',
-        descending: true,
-      });
-      expect(articles[0]).toEqual({
-        article_id: 4,
-        article_img_url:
-          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
-        author: 'rogersop',
-        comment_count: 0,
-        created_at: '2020-05-06T01:14:00.000Z',
-        title: 'Student SUES Mitch!',
-        topic: 'mitch',
-        votes: 0,
       });
     });
 
