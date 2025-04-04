@@ -98,7 +98,7 @@ exports.updateArticleVotes = async (id, votes) => {
 exports.fetchCommentsByArticleId = async (article_id) => {
   await checkExists('articles', 'article_id', article_id);
   const { rows } = await db.query(
-    'SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at ASC',
+    'SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC',
     [article_id]
   );
 

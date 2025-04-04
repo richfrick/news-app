@@ -39,7 +39,7 @@ describe('GET: /api/articles/:article_id/comments', () => {
       });
     });
   });
-  it.skip('200: response will be filtered in ascending date order', async () => {
+  it.skip('200: response will be filtered in descending date order', async () => {
     const {
       status,
       body: { comments },
@@ -47,11 +47,11 @@ describe('GET: /api/articles/:article_id/comments', () => {
     expect(status).toBe(200);
     expect(comments).toBeSorted({ key: 'created_at', descending: false });
     expect(comments[0]).toEqual({
-      comment_id: 9,
-      votes: 0,
-      created_at: '2020-01-01T03:08:00.000Z',
-      author: 'icellusedkars',
-      body: 'Superficially charming',
+      comment_id: 89,
+      votes: 2,
+      created_at: '2020-10-24T06:08:00.000Z',
+      author: 'cooljmessy',
+      body: 'Esse et expedita harum non. Voluptatibus commodi voluptatem. Minima velit suscipit numquam ea. Id vitae debitis aut incidunt odio quo quam possimus ipsum.',
       article_id: 1,
     });
   });
