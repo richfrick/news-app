@@ -14,16 +14,21 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
   );
 }
 
-const config =
-  ENV === 'production'
-    ? {
-        connectionString: process.env.DATABASE_URL,
-        max: 2,
-      }
-    : {};
+let config;
+
+if (ENV === 'production') {
+  config = {
+    connectionString: process.env.DATABASE_URL,
+    max: 2,
+  };
+} else {
+  config = {
+    host: process.env.PGHOST || 'localhost',
+    port: Number(process.env.PGPORT) || 5432,
+    database: process.env.PGDATABASE,
+  };
+}
 
 const db = new Pool(config);
-
-//db.query("SET timezone TO 'UTC';");
 
 module.exports = db;
