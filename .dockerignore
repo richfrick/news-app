@@ -1,0 +1,8 @@
+node_modules
+.git*
+**/ .env*
+__tests__
+.husky
+Dockerfile
+README.md
+error-handling.md
