@@ -1,4 +1,4 @@
-FROM node:24.2.0-alpine3.22
+FROM node:20
 
 WORKDIR /app
 
@@ -8,6 +8,15 @@ RUN npm ci
 
 COPY . .
 
-EXPOSE 9090
+RUN chmod +x scripts/wait-for-it.sh
 
-CMD ["npm", "run", "start"]
+ENV PGHOST=postgres \
+    PGDATABASE=nc_news_test \
+    PGUSER=postgres \
+    PGPASSWORD=postgres \
+    PGPORT=5432 \
+    TZ=UTC\
+    NODE_ENV=test
+
+
+CMD ["npm", "test"]
