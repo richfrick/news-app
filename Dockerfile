@@ -3,20 +3,12 @@ FROM node:20
 WORKDIR /app
 
 COPY package*.json .
-
-RUN npm ci
+RUN npm install
 
 COPY . .
 
-RUN chmod +x scripts/wait-for-it.sh
+RUN chmod +x ./scripts/wait-for-it.sh
 
-ENV PGHOST=postgres \
-    PGDATABASE=nc_news_test \
-    PGUSER=postgres \
-    PGPASSWORD=postgres \
-    PGPORT=5432 \
-    TZ=UTC\
-    NODE_ENV=test
+ENV TZ=UTC
 
-
-CMD ["npm", "test"]
+CMD ["npm", "run", "start"]
