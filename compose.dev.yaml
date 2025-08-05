@@ -1,0 +1,37 @@
+services:
+    postgres:
+        image: postgres:16
+        container_name: pg_dev
+        restart: always
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: ${PGUSER}
+            POSTGRES_PASSWORD: ${PGPASSWORD}
+            POSTGRES_DB: ${PGDATABASE}
+            TZ: UTC
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+            - ./db/setup-dev-db.sql:/docker-entrypoint-initdb.d/setup-dev-db.sql
+        command: ["postgres", "-c", "timezone=UTC"]
+
+    node-app:
+        build: .
+        container_name: dev_runner
+        ports:
+            - "9090:9090"
+        depends_on:
+            - postgres
+        env_file:
+            - .env.development
+        environment:
+            NODE_ENV: development
+            TZ: UTC
+        volumes:
+            - .:/app
+            - /app/node_modules
+        command: >
+            bash -c "./scripts/wait-for-it.sh postgres:5432 --timeout=30 --strict -- npm run seed-dev && npm run start-dev"
+
+volumes:
+    pgdata:

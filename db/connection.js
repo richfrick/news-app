@@ -1,8 +1,25 @@
 const { Pool } = require("pg");
+const fs = require("fs");
+const path = require("path");
 
 const ENV = process.env.NODE_ENV || "development";
 
-require("dotenv").config({ path: `${__dirname}/../.env.${ENV}` });
+const localPath = path.join(__dirname, `../.env.${ENV}.local`);
+const defaultPath = path.join(__dirname, `../.env.${ENV}`);
+
+if (!process.env.PGHOST && !process.env.DATABASE_URL) {
+    if (fs.existsSync(localPath)) {
+        require("dotenv").config({ path: localPath });
+    } else {
+        require("dotenv").config({ path: defaultPath });
+    }
+}
+
+if (!process.env.PGHOST && !process.env.DATABASE_URL) {
+    if (!process.env.DOCKER) {
+        process.env.PGHOST = "localhost";
+    }
+}
 
 if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
     throw new Error("No PGDATABASE or DATABASE_URL configured");

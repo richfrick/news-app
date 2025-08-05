@@ -1,0 +1,7 @@
+DROP DATABASE IF EXISTS nc_news;
+
+CREATE DATABASE nc_news;
+
+ALTER DATABASE nc_news
+SET
+    timezone TO 'UTC';
