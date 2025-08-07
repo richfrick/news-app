@@ -44,10 +44,10 @@ jobs:
             - name: Check if API KEY exists exists
               run: echo "API KEY is set"
               env:
-                  MY_SECRET: ${{ secrets.RENDER_API_KEY_STAGING }}
+                  MY_SECRET: ${{ secrets.RENDER_API_KEY }}
 
             - name: Deploy to staging
               uses: johnbeynon/render-deploy-action@v0.0.8
               with:
                   service-id: ${{ secrets.RENDER_SERVICE_ID_STAGING }}
-                  api-key: ${{ secrets.RENDER_API_KEY_STAGING }}
+                  api-key: ${{ secrets.RENDER_API_KEY }}
