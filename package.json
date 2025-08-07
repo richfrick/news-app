@@ -13,8 +13,10 @@
         "test-seed": "jest seed.test.js",
         "start-dev": "nodemon ./app/listen.js",
         "start": "node ./app/listen.js",
+        "seed-stg": "NODE_ENV=staging npm run seed-dev",
         "seed-prod": "NODE_ENV=production npm run seed-dev",
-        "start-prod": "NODE_ENV=production npm run start"
+        "start-prod": "NODE_ENV=production npm run start",
+        "start-stg": "NODE_ENV=staging npm run start"
     },
     "repository": {
         "type": "git",
@@ -41,6 +43,7 @@
         "cors": "^2.8.5",
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
+        "netlify-cli": "^23.1.1",
         "pg": "^8.13.3"
     },
     "jest": {

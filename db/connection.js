@@ -38,6 +38,11 @@ if (ENV === "production") {
         connectionString: process.env.DATABASE_URL,
         max: 2,
     };
+} else if (ENV === "staging") {
+    config = {
+        connectionString: process.env.DATABASE_URL,
+        max: 2,
+    };
 } else {
     config = {
         host: process.env.PGHOST || "localhost",
