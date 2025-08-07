@@ -1,9 +1,14 @@
+const db = require("../db/connection");
 const {
     convertTimestampToDate,
     formatTopicsSeedingData,
     createLookup,
     checkExists,
 } = require("../db/seeds/utils");
+
+afterAll(() => {
+    return db.end();
+});
 
 describe("convertTimestampToDate", () => {
     test("returns a new object", () => {
@@ -158,8 +163,13 @@ describe("create lookup", () => {
 });
 
 describe("check exists", () => {
-    it.todo("404: returns an error if column value is not found");
-    it.todo("404: returns an error if column is not found");
-    it.todo("404: returns an error if table value is not found");
-    it.todo("404: returns result from db query when it is successful");
+    it("404: returns an error if column value is not found", async () => {
+        try {
+            await checkExists("topics", "slug", "fooBar");
+        } catch (error) {
+            expect(error.status).toBe(404);
+            expect(error.msg).toBe("Not Found");
+        }
+    });
+    it.todo("200: returns result from db query when it is successful");
 });

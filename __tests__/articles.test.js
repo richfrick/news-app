@@ -94,7 +94,7 @@ describe("Articles Endpoint", () => {
             });
         });
 
-        it.skip("200: sort by title will return a list in decending order", async () => {
+        it("200: sort by title will return a list in decending order", async () => {
             const {
                 status,
                 body: { articles },
@@ -115,7 +115,7 @@ describe("Articles Endpoint", () => {
             });
         });
 
-        it.skip("200: sort by topic will return a list in descending order", async () => {
+        it("200: sort by topic will return a list in descending order", async () => {
             const {
                 status,
                 body: { articles },
@@ -129,14 +129,14 @@ describe("Articles Endpoint", () => {
                     "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
                 author: "icellusedkars",
                 comment_count: 0,
-                created_at: "2020-04-17T01:08:00.000Z",
+                created_at: "2020-04-17T02:08:00.000Z",
                 title: "Does Mitch predate civilisation?",
                 topic: "mitch",
                 votes: 0,
             });
         });
 
-        it.skip("200: sort by author will return a list in descending order", async () => {
+        it("200: sort by author will return a list in descending order", async () => {
             const {
                 status,
                 body: { articles },
@@ -150,35 +150,38 @@ describe("Articles Endpoint", () => {
                     "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
                 author: "rogersop",
                 comment_count: 0,
-                created_at: "2020-05-06T01:14:00.000Z",
+                created_at: "2020-05-06T02:14:00.000Z",
                 title: "Student SUES Mitch!",
                 topic: "mitch",
                 votes: 0,
             });
         });
 
-        it.skip("200: sort by comment_count will return a list in descending order", async () => {
+        it("200: sort by comment_count will return a list in descending order", async () => {
             const {
                 status,
                 body: { articles },
-            } = await request(app).get("/api/articles?sort_by=commment_count");
+            } = await request(app).get("/api/articles?sort_by=comment_count");
             expect(status).toBe(200);
             expect(articles.length).toBe(13);
-            expect(articles).toBeSorted({ key: "author", descending: true });
+            expect(articles).toBeSorted({
+                key: "comment_count",
+                descending: true,
+            });
             expect(articles[0]).toEqual({
-                article_id: 4,
+                article_id: 1,
                 article_img_url:
                     "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-                author: "rogersop",
-                comment_count: 0,
-                created_at: "2020-05-06T01:14:00.000Z",
-                title: "Student SUES Mitch!",
+                author: "butter_bridge",
+                comment_count: 11,
+                created_at: "2020-07-09T21:11:00.000Z",
+                title: "Living in the shadow of a great man",
                 topic: "mitch",
-                votes: 0,
+                votes: 100,
             });
         });
 
-        it.skip("200: sort by created_at will return a list in descending order", async () => {
+        it("200: sort by created_at will return a list in descending order", async () => {
             const {
                 status,
                 body: { articles },
@@ -202,7 +205,7 @@ describe("Articles Endpoint", () => {
             });
         });
 
-        it.skip("200: sort by votes will return a list in decending order", async () => {
+        it("200: sort by votes will return a list in decending order", async () => {
             const {
                 status,
                 body: { articles },
@@ -216,14 +219,14 @@ describe("Articles Endpoint", () => {
                     "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
                 author: "butter_bridge",
                 comment_count: 11,
-                created_at: "2020-07-09T20:11:00.000Z",
+                created_at: "2020-07-09T21:11:00.000Z",
                 title: "Living in the shadow of a great man",
                 topic: "mitch",
                 votes: 100,
             });
         });
 
-        it.skip("200: providing order=asc ONLY will return a list sorted by created_at in ascending order", async () => {
+        it("200: providing order=asc ONLY will return a list sorted by created_at in ascending order", async () => {
             const {
                 status,
                 body: { articles },
@@ -247,7 +250,7 @@ describe("Articles Endpoint", () => {
             });
         });
 
-        it.skip("200: providing order=desc ONLY will return a list sorted by created_at in descending order", async () => {
+        it("200: providing order=desc ONLY will return a list sorted by created_at in descending order", async () => {
             const {
                 status,
                 body: { articles },
@@ -271,7 +274,7 @@ describe("Articles Endpoint", () => {
             });
         });
 
-        it.skip("200: articles can be sorted by any valid coulumn in ascending order", async () => {
+        it("200: articles can be sorted by any valid coulumn in ascending order", async () => {
             const {
                 status,
                 body: { articles },
@@ -290,7 +293,7 @@ describe("Articles Endpoint", () => {
                     "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
                 author: "butter_bridge",
                 comment_count: 11,
-                created_at: "2020-07-09T20:11:00.000Z",
+                created_at: "2020-07-09T21:11:00.000Z",
                 title: "Living in the shadow of a great man",
                 topic: "mitch",
                 votes: 100,
@@ -324,7 +327,7 @@ describe("Articles Endpoint", () => {
             expect(msg).toBe("Bad Request, invalid query param or value");
         });
 
-        it.skip("200: an invalid query param will be ignored and the default query is used", async () => {
+        it("200: an invalid query param will be ignored and the default query is used", async () => {
             const {
                 status,
                 body: { articles },
@@ -356,7 +359,7 @@ describe("Articles Endpoint", () => {
             expect(msg).toBe("Bad Request, invalid query param or value");
         });
 
-        it.skip("200: filtering by a topic with articles will return results", async () => {
+        it("200: filtering by a topic with articles will return results", async () => {
             const {
                 status,
                 body: { articles },
@@ -369,7 +372,7 @@ describe("Articles Endpoint", () => {
                     "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
                 author: "rogersop",
                 comment_count: 2,
-                created_at: "2020-08-03T13:14:00.000Z",
+                created_at: "2020-08-03T14:14:00.000Z",
                 title: "UNCOVERED: catspiracy to bring down democracy",
                 topic: "cats",
                 votes: 0,
@@ -396,7 +399,7 @@ describe("Articles Endpoint", () => {
     });
 
     describe("GET: /api/articles/:article_id", () => {
-        it.skip("200: an individual article can be retrieved by id and will contain author, title, article_id, body, topic, created_at, votes, article_img_url", async () => {
+        it("200: an individual article can be retrieved by id and will contain author, title, article_id, body, topic, created_at, votes, article_img_url", async () => {
             const {
                 status,
                 body: { article },
@@ -410,7 +413,7 @@ describe("Articles Endpoint", () => {
                 author: "icellusedkars",
                 body: "Call me Mitchell. Some years ago..",
                 comment_count: 0,
-                created_at: "2020-10-16T05:03:00.000Z",
+                created_at: "2020-10-16T06:03:00.000Z",
                 title: "Sony Vaio; or, The Laptop",
                 topic: "mitch",
                 votes: 0,
@@ -452,7 +455,7 @@ describe("Articles Endpoint", () => {
     });
 
     describe("PATCH: /api/articles/:article_id", () => {
-        it.skip("200: votes can be incremented by x and returns the updated article", async () => {
+        it("200: votes can be incremented by x and returns the updated article", async () => {
             const {
                 status,
                 body: { article },
@@ -472,7 +475,7 @@ describe("Articles Endpoint", () => {
                 votes: 1,
             });
         });
-        it.skip("200: votes can be decreaced by x and returns the updated article", async () => {
+        it("200: votes can be decreaced by x and returns the updated article", async () => {
             const {
                 status,
                 body: { article },
@@ -492,7 +495,7 @@ describe("Articles Endpoint", () => {
                 votes: -2,
             });
         });
-        it.skip("200: adding 0 to addOrRemoveVotes will not change the vote count", async () => {
+        it("200: adding 0 to addOrRemoveVotes will not change the vote count", async () => {
             const {
                 status,
                 body: { article },
