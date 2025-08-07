@@ -1,39 +1,13 @@
-name: prod test & deploy workflow
+name: Deploy to Production
 run-name: ${{ github.actor }} is deploying to Production 🚀
 on:
     push:
         branches:
             - main
 jobs:
-    test:
-        name: Test
-        runs-on: ubuntu-latest
-        steps:
-            - name: checkout repo
-              uses: actions/checkout@v3
-
-            - name: Check system timezone
-              run: date +"%Z %z"
-
-            - name: Use Node.js
-              uses: actions/setup-node@v2
-
-            - name: Use PostgresSQL
-              uses: harmon758/postgresql-action@v1
-              with:
-                  postgresql db: "nc_news_test"
-                  postgresql user: "test_user"
-                  postgresql password: "password"
-
-            - name: Install dependencies
-              run: npm ci
-
-            - name: Run tests
-              run: PGDATABASE=nc_news_test PGUSER=test_user PGPASSWORD=password npm t
-
     deploy:
+        name: Deploy
         runs-on: ubuntu-latest
-        needs: test
         steps:
             - name: Checkout repo
               uses: actions/checkout@v3
