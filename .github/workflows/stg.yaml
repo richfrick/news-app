@@ -1,5 +1,5 @@
 name: PR deploy & test (Staging)
-run-name: ${{ github.actor }} is deploying to Production 🚀
+run-name: ${{ github.actor }} is deploying to Staging 🚀
 
 on:
     pull_request:
