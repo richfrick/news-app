@@ -109,12 +109,10 @@ exports.fetchCommentsByArticleId = async (article_id) => {
 };
 
 exports.createNewArticle = async (reqBody) => {
-    console.log("createNewArticle");
     const { author, title, body, topic, article_img_url } = reqBody;
     const requestParams = [author, title, body, topic, article_img_url];
-    console.log("request Params = " + requestParams);
+
     await checkExists("users", "username", author);
-    console.log("checking username");
     await checkExists("topics", "slug", topic);
     const queryStr = format(
         "INSERT INTO articles (author, title, body, topic, article_img_url) VALUES (%L) RETURNING *",
