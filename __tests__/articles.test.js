@@ -454,6 +454,50 @@ describe("Articles Endpoint", () => {
         });
     });
 
+    describe.only("POST: /api/articles", () => {
+        it("201: a new article can be created", async () => {
+            const { status, body } = await request(app)
+                .post("/api/articles")
+                .send({
+                    author: "rogersop",
+                    title: "test title",
+                    body: "test body",
+                    topic: "cats",
+                    article_img_url:
+                        "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700",
+                });
+            expect(status).toBe(201);
+            expect(body.article.body).toEqual("test body");
+        });
+        it.todo(
+            "201: new artile response will contain article_id, votes, created_at, comment_count"
+        );
+        it.todo(
+            "201: correct default values are assigned to article_id, votes & created_at"
+        );
+        it.todo(
+            "201: new article with extra key/values in request body will ignore the extra keys"
+        );
+        it.todo(
+            "400: creating an article with a topic that doesn't exist will throw a foreign key exception"
+        );
+        it.todo(
+            "400: creating an article with a author that doesn't exist will throw a foreign key exception"
+        );
+        it.todo(
+            "400: attempting to create an article without author will fail"
+        );
+        it.todo("400: attempting to create an article without title will fail");
+        it.todo("400: attempting to create an article without body will fail");
+        it.todo("400: attempting to create an article without topic will fail");
+        it.todo(
+            "400: attempting to create an article without article_img_url will fail"
+        );
+        it.todo(
+            "400: attempting to create an article byt providing the wronv type in a key will fail"
+        );
+    });
+
     describe("PATCH: /api/articles/:article_id", () => {
         it("200: votes can be incremented by x and returns the updated article", async () => {
             const {

@@ -104,7 +104,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
                 body: "foo bar",
             });
         expect(status).toBe(201);
-        expect(body.comment[0].body).toEqual("foo bar");
+        expect(body.comment.body).toEqual("foo bar");
     });
 
     it("201: new comment will assign correct values to comment_id, votes, created_at, author, body, article_id", async () => {

@@ -40,3 +40,13 @@ exports.checkExists = async (table, column, value) => {
         return dbOutput;
     }
 };
+
+exports.validatePayload = (lookup, payload) => {
+    try {
+        return lookup.every(
+            (key) => key in payload && payload[key] !== undefined
+        );
+    } catch (error) {
+        console.log(error);
+    }
+};
