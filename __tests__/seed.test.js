@@ -30,7 +30,6 @@ describe("seed", () => {
                     AND column_name = 'slug';`
                 )
                 .then(({ rows: [column] }) => {
-                    //console.log(column, '<<<<<<<TEST FILE');
                     expect(column.column_name).toBe("slug");
                     expect(column.data_type).toBe("character varying");
                 });

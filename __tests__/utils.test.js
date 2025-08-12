@@ -168,7 +168,7 @@ describe("check exists", () => {
             await checkExists("topics", "slug", "fooBar");
         } catch (error) {
             expect(error.status).toBe(404);
-            expect(error.msg).toBe("Not Found");
+            expect(error.msg).toBe("slug Not Found");
         }
     });
     it.todo("200: returns result from db query when it is successful");

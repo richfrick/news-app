@@ -1,113 +1,139 @@
 {
-  "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
-  },
+    "GET /api": {
+        "description": "serves up a json representation of all the available endpoints of the api"
+    },
 
-  "GET /api/articles": {
-    "description": "retunrs an array of all articles. By default this will be in decending created_at order",
-    "queries": ["sort_by", "order", "topic"],
-    "exampleResponse": {
-      "articles": [
-        {
-          "author": "weegembump",
-          "title": "Seafood substitutions are increasing",
-          "article_id": 1,
-          "topic": "cooking",
-          "created_at": "2018-05-30T15:59:13.341Z",
-          "votes": 0,
-          "article_img_url": "Text from the article..",
-          "comment_count": 6
+    "GET /api/articles": {
+        "description": "retunrs an array of all articles. By default this will be in decending created_at order",
+        "queries": ["sort_by", "order", "topic"],
+        "exampleResponse": {
+            "articles": [
+                {
+                    "author": "weegembump",
+                    "title": "Seafood substitutions are increasing",
+                    "article_id": 1,
+                    "topic": "cooking",
+                    "created_at": "2018-05-30T15:59:13.341Z",
+                    "votes": 0,
+                    "article_img_url": "Text from the article..",
+                    "comment_count": 6
+                }
+            ]
         }
-      ]
-    }
-  },
-  "GET /api/articles/:article_id": {
-    "description": "returns an individual article based on the article_id provided",
-    "queries": [],
-    "exampleResponse": {
-      "articles": [
-        {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": "2018-05-30T15:59:13.341Z",
-          "votes": 0,
-          "comment_count": 6
-        }
-      ]
-    }
-  },
-  "PATCH /api/articles/:article_id": {
-    "description": "Can be used to increment or decrecee the number of votes on an article",
-    "queries": [],
-    "exampleRequest": {
-      "addOrRemoveVotes": 20
     },
-    "exampleResponse": {
-      "article": [
-        {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "foo bar",
-          "created_at": "2018-05-30T15:59:13.341Z",
-          "votes": 21,
-          "comment_count": 6
+    "Post /api/articles": {
+        "description": "Creates a new article",
+        "exampleRequest": {
+            "author": "fooBar1982",
+            "title": "fooBar",
+            "body": "foobar body",
+            "topic": "foobar",
+            "article_img_url": "https://foobar.jpeg"
+        },
+        "exampleResponse": {
+            "article": {
+                "article_id": 38,
+                "title": "fooBar",
+                "topic": "fooBar",
+                "author": "fooBar1982",
+                "body": "fooBar body",
+                "created_at": "2025-08-12T13:54:14.238Z",
+                "votes": 0,
+                "article_img_url": "https://foobar.jpeg"
+            }
         }
-      ]
-    }
-  },
-  "GET /api/articles/:article_id/comments": {
-    "description": "returns all of the comments relating to an article",
-    "queries": [],
-    "exampleResponse": {
-      "articles": [
-        {
-          "comment_id": 20,
-          "votes": 3,
-          "created_at": "2018-05-30T15:59:13.341Z",
-          "author": "Dr.Article Author",
-          "body": "this article is foo bar",
-          "article_id": 1
-        }
-      ]
-    }
-  },
-  "POST /api/articles/:article_id/comments": {
-    "description": "creates a new comment on the article_id provided in the request. response will contain the successfully posted comment.",
-    "queries": [],
-    "exampleRequest": {
-      "author": "Dr.Article Author",
-      "body": "this article is foo bar"
     },
-    "exampleResponse": {
-      "comment": [
-        {
-          "comment": "this article is foo bar"
+    "GET /api/articles/:article_id": {
+        "description": "returns an individual article based on the article_id provided",
+        "queries": [],
+        "exampleResponse": {
+            "articles": [
+                {
+                    "title": "Seafood substitutions are increasing",
+                    "topic": "cooking",
+                    "author": "weegembump",
+                    "body": "Text from the article..",
+                    "created_at": "2018-05-30T15:59:13.341Z",
+                    "votes": 0,
+                    "comment_count": 6
+                }
+            ]
         }
-      ]
+    },
+    "PATCH /api/articles/:article_id": {
+        "description": "Can be used to increment or decrecee the number of votes on an article",
+        "queries": [],
+        "exampleRequest": {
+            "addOrRemoveVotes": 20
+        },
+        "exampleResponse": {
+            "article": [
+                {
+                    "title": "Seafood substitutions are increasing",
+                    "topic": "cooking",
+                    "author": "weegembump",
+                    "body": "foo bar",
+                    "created_at": "2018-05-30T15:59:13.341Z",
+                    "votes": 21,
+                    "comment_count": 6
+                }
+            ]
+        }
+    },
+    "GET /api/articles/:article_id/comments": {
+        "description": "returns all of the comments relating to an article",
+        "queries": [],
+        "exampleResponse": {
+            "articles": [
+                {
+                    "comment_id": 20,
+                    "votes": 3,
+                    "created_at": "2018-05-30T15:59:13.341Z",
+                    "author": "Dr.Article Author",
+                    "body": "this article is foo bar",
+                    "article_id": 1
+                }
+            ]
+        }
+    },
+    "POST /api/articles/:article_id/comments": {
+        "description": "creates a new comment on the article_id provided in the request. response will contain the successfully posted comment.",
+        "queries": [],
+        "exampleRequest": {
+            "author": "Dr.Article Author",
+            "body": "this article is foo bar"
+        },
+        "exampleResponse": {
+            "comment": [
+                {
+                    "comment": "this article is foo bar"
+                }
+            ]
+        }
+    },
+    "DELETE /api/comments/:comment_id": {
+        "description": "deletes a comment",
+        "queries": [],
+        "exampleResponse": {}
+    },
+    "GET /api/topics": {
+        "description": "serves an array of all topics",
+        "queries": [],
+        "exampleResponse": {
+            "topics": [{ "slug": "football", "description": "Footie!" }]
+        }
+    },
+    "GET /api/users": {
+        "description": "returns an array of all users",
+        "queries": [],
+        "exampleResponse": {
+            "topics": [
+                {
+                    "username": "foo",
+                    "name": "foo bar",
+                    "avatar_url": "fooBar.url"
+                }
+            ]
+        }
     }
-  },
-  "DELETE /api/comments/:comment_id": {
-    "description": "deletes a comment",
-    "queries": [],
-    "exampleResponse": {}
-  },
-  "GET /api/topics": {
-    "description": "serves an array of all topics",
-    "queries": [],
-    "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
-    }
-  },
-  "GET /api/users": {
-    "description": "returns an array of all users",
-    "queries": [],
-    "exampleResponse": {
-      "topics": [
-        { "username": "foo", "name": "foo bar", "avatar_url": "fooBar.url" }
-      ]
-    }
-  }
 }
