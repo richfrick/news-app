@@ -72,7 +72,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
             body: { msg },
         } = await request(app).get("/api/articles/99/comments");
         expect(status).toBe(404);
-        expect(msg).toEqual("Not Found");
+        expect(msg).toEqual("article_id Not Found");
     });
     it("400: bad request will be returned if the article_id is the wrong type", async () => {
         const {
@@ -159,7 +159,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
             body: "foo bar",
         });
         expect(status).toBe(404);
-        expect(msg).toEqual("Not Found");
+        expect(msg).toEqual("article_id Not Found");
     });
 
     it("400: will respond with bad request if the article_id is the wrong type", async () => {
@@ -183,7 +183,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
             body: "foo bar",
         });
         expect(status).toBe(404);
-        expect(msg).toEqual("Not Found");
+        expect(msg).toEqual("username Not Found");
     });
 
     it("404: will respond with a not found when the author is the wrong type", async () => {
@@ -195,7 +195,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
             body: "foo bar",
         });
         expect(status).toBe(404);
-        expect(msg).toEqual("Not Found");
+        expect(msg).toEqual("username Not Found");
     });
 
     it("400: will respond with a bad request when the body key is null", async () => {
@@ -252,7 +252,7 @@ describe("DELETE: /api/comments/:comment_id", () => {
                 body: { msg },
             } = await request(app).delete("/api/comments/99");
             expect(status).toBe(404);
-            expect(msg).toEqual("Not Found");
+            expect(msg).toEqual("comment_id Not Found");
         };
     });
 

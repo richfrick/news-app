@@ -110,7 +110,21 @@ exports.fetchCommentsByArticleId = async (article_id) => {
 
 exports.createNewArticle = async (reqBody) => {
     const { author, title, body, topic, article_img_url } = reqBody;
-    const requestParams = [author, title, body, topic, article_img_url];
+    const requestParams = [author, title, body, topic];
+
+    if (!author || !title || !body || !topic) {
+        return Promise.reject({
+            status: 400,
+            msg: "Bad Request: invalid request body",
+        });
+    }
+    if (!article_img_url) {
+        requestParams.push(
+            "https://images.pexels.com/photos/11035300/pexels-photo-11035300.jpeg?w=700&h=700"
+        );
+    } else {
+        requestParams.push(article_img_url);
+    }
 
     await checkExists("users", "username", author);
     await checkExists("topics", "slug", topic);

@@ -4,6 +4,19 @@ const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../app/app");
+const {
+    articlesUrl,
+    validRequestBody,
+    requestBodyWithNoImage,
+    requestBodyWithExtraKeyValue,
+    requestBodyWithInvalidTopic,
+    requestBodyWithInvalidAuthor,
+    requestBodyWithNoAuthor,
+    requestBodyWithNoTitle,
+    requestBodyWithNoBody,
+    requestBodyWithNoTopic,
+} = require("../utils/testData/articlesTestData");
+const { checkDateFormat } = require("../utils/testUtils/testUtils");
 
 beforeEach(() => {
     return seed(data);
@@ -394,7 +407,7 @@ describe("Articles Endpoint", () => {
                 body: { msg },
             } = await request(app).get("/api/articles?topic=123");
             expect(status).toBe(404);
-            expect(msg).toEqual("Not Found");
+            expect(msg).toEqual("slug Not Found");
         });
     });
 
@@ -454,48 +467,125 @@ describe("Articles Endpoint", () => {
         });
     });
 
-    describe.only("POST: /api/articles", () => {
+    describe("POST: /api/articles", () => {
         it("201: a new article can be created", async () => {
-            const { status, body } = await request(app)
-                .post("/api/articles")
-                .send({
-                    author: "rogersop",
-                    title: "test title",
-                    body: "test body",
-                    topic: "cats",
-                    article_img_url:
-                        "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700",
-                });
+            const { status } = await request(app)
+                .post(articlesUrl)
+                .send(validRequestBody);
             expect(status).toBe(201);
-            expect(body.article.body).toEqual("test body");
         });
-        it.todo(
-            "201: new artile response will contain article_id, votes, created_at, comment_count"
-        );
-        it.todo(
-            "201: correct default values are assigned to article_id, votes & created_at"
-        );
-        it.todo(
-            "201: new article with extra key/values in request body will ignore the extra keys"
-        );
-        it.todo(
-            "400: creating an article with a topic that doesn't exist will throw a foreign key exception"
-        );
-        it.todo(
-            "400: creating an article with a author that doesn't exist will throw a foreign key exception"
-        );
-        it.todo(
-            "400: attempting to create an article without author will fail"
-        );
-        it.todo("400: attempting to create an article without title will fail");
-        it.todo("400: attempting to create an article without body will fail");
-        it.todo("400: attempting to create an article without topic will fail");
-        it.todo(
-            "400: attempting to create an article without article_img_url will fail"
-        );
-        it.todo(
-            "400: attempting to create an article byt providing the wronv type in a key will fail"
-        );
+        it("201: new artile response will contain correct values for title, topic, author, body & article_img_url", async () => {
+            const {
+                status,
+                body: {
+                    article: { title, topic, author, body, article_img_url },
+                },
+            } = await request(app).post(articlesUrl).send(validRequestBody);
+            expect(status).toBe(201);
+            expect(title).toBe("test title");
+            expect(topic).toBe("cats");
+            expect(author).toBe("rogersop");
+            expect(body).toBe("test body");
+            expect(article_img_url).toBe(
+                "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700"
+            );
+        });
+        it("201: default values are assigned to article_id, votes & created_at", async () => {
+            const {
+                status,
+                body: {
+                    article: { article_id, created_at, votes },
+                },
+            } = await request(app).post(articlesUrl).send(validRequestBody);
+            expect(status).toBe(201);
+            expect(typeof article_id).toBe("number");
+            expect(checkDateFormat(created_at)).not.toBeNull();
+            expect(votes).toBe(0);
+        });
+        it("201: attempting to create an article without article_img_url will use a default image", async () => {
+            const {
+                status,
+                body: {
+                    article: { article_img_url },
+                },
+            } = await request(app)
+                .post(articlesUrl)
+                .send(requestBodyWithNoImage);
+            expect(status).toBe(201);
+            expect(article_img_url).toBe(
+                "https://images.pexels.com/photos/11035300/pexels-photo-11035300.jpeg?w=700&h=700"
+            );
+        });
+        it("201: new article with extra key/values in request body will ignore the extra keys", async () => {
+            const {
+                status,
+                body: { article },
+            } = await request(app)
+                .post(articlesUrl)
+                .send(requestBodyWithExtraKeyValue);
+            expect(status).toBe(201);
+            expect(article).not.toHaveProperty("foo");
+        });
+        it("404: creating an article with a topic that doesn't exist will throw a 404 not found", async () => {
+            const {
+                status,
+                body: { msg },
+            } = await request(app)
+                .post(articlesUrl)
+                .send(requestBodyWithInvalidTopic);
+            expect(status).toBe(404);
+            expect(msg).toEqual("slug Not Found");
+        });
+        it("404: creating an article with a author that doesn't exist will throw a 404 not found", async () => {
+            const {
+                status,
+                body: { msg },
+            } = await request(app)
+                .post(articlesUrl)
+                .send(requestBodyWithInvalidAuthor);
+            expect(status).toBe(404);
+            expect(msg).toEqual("username Not Found");
+        });
+        it("400: attempting to create an article without author will fail", async () => {
+            const {
+                status,
+                body: { msg },
+            } = await request(app)
+                .post(articlesUrl)
+                .send(requestBodyWithNoAuthor);
+            expect(status).toBe(400);
+            expect(msg).toEqual("Bad Request: invalid request body");
+        });
+        it("400: attempting to create an article without title will fail", async () => {
+            const {
+                status,
+                body: { msg },
+            } = await request(app)
+                .post(articlesUrl)
+                .send(requestBodyWithNoTitle);
+            expect(status).toBe(400);
+            expect(msg).toEqual("Bad Request: invalid request body");
+        });
+        it("400: attempting to create an article without body will fail", async () => {
+            const {
+                status,
+                body: { msg },
+            } = await request(app)
+                .post(articlesUrl)
+                .send(requestBodyWithNoBody);
+            expect(status).toBe(400);
+            expect(msg).toEqual("Bad Request: invalid request body");
+        });
+        it("400: attempting to create an article without topic will fail", async () => {
+            const {
+                status,
+                body: { msg },
+            } = await request(app)
+                .post(articlesUrl)
+                .send(requestBodyWithNoTopic);
+            expect(status).toBe(400);
+            expect(msg).toEqual("Bad Request: invalid request body");
+        });
     });
 
     describe("PATCH: /api/articles/:article_id", () => {
@@ -587,7 +677,7 @@ describe("Articles Endpoint", () => {
                 .patch("/api/articles/99")
                 .send({ addOrRemoveVotes: 1 });
             expect(status).toBe(404);
-            expect(msg).toEqual("Not Found");
+            expect(msg).toEqual("article_id Not Found");
         });
         it("400: passing an article_id of the wrong type throws a bad request error", async () => {
             const {
