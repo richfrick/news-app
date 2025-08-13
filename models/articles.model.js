@@ -82,32 +82,6 @@ exports.fetchArticleById = async (id) => {
     return rows[0];
 };
 
-exports.updateArticleVotes = async (id, votes) => {
-    if (typeof votes != "number") {
-        return Promise.reject({
-            status: 400,
-            msg: "Bad Request: invalid request body",
-        });
-    }
-
-    await checkExists("articles", "article_id", id);
-    const { rows } = await db.query(
-        `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`,
-        [votes, id]
-    );
-    return rows[0];
-};
-
-exports.fetchCommentsByArticleId = async (article_id) => {
-    await checkExists("articles", "article_id", article_id);
-    const { rows } = await db.query(
-        "SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC",
-        [article_id]
-    );
-
-    return rows;
-};
-
 exports.createNewArticle = async (reqBody) => {
     const { author, title, body, topic, article_img_url } = reqBody;
     const requestParams = [author, title, body, topic];
@@ -137,6 +111,36 @@ exports.createNewArticle = async (reqBody) => {
     return rows[0];
 };
 
+exports.deleteArticle = async (article_id) => {
+    await db.query(`DELETE FROM articles WHERE article_id = $1`, [article_id]);
+};
+
+exports.updateArticleVotes = async (id, votes) => {
+    if (typeof votes != "number") {
+        return Promise.reject({
+            status: 400,
+            msg: "Bad Request: invalid request body",
+        });
+    }
+
+    await checkExists("articles", "article_id", id);
+    const { rows } = await db.query(
+        `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`,
+        [votes, id]
+    );
+    return rows[0];
+};
+
+exports.fetchCommentsByArticleId = async (article_id) => {
+    await checkExists("articles", "article_id", article_id);
+    const { rows } = await db.query(
+        "SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC",
+        [article_id]
+    );
+
+    return rows;
+};
+
 exports.createNewComment = async (article_id, reqBody) => {
     const { author, body } = reqBody;
     const requestParams = [article_id, author, body];
@@ -151,7 +155,7 @@ exports.createNewComment = async (article_id, reqBody) => {
     await checkExists("articles", "article_id", article_id);
     await checkExists("users", "username", author);
     const queryStr = format(
-        "INSERT INTO comments (article_id, author, body) VALUES (%L) RETURNING body",
+        "INSERT INTO comments (article_id, author, body) VALUES (%L) RETURNING *",
         requestParams
     );
 

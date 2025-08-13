@@ -97,7 +97,7 @@ function seedArticles(articleData) {
 function createComments() {
     return db.query(`CREATE TABLE comments(
     comment_id SERIAL PRIMARY KEY NOT NULL,
-    article_id INT REFERENCES articles(article_id) NOT NULL,
+    article_id INT REFERENCES articles(article_id) ON DELETE CASCADE NOT NULL,
     body TEXT NOT NULL,
     votes INT NOT NULL DEFAULT 0,
     author VARCHAR(50) REFERENCES users(username) NOT NULL,
