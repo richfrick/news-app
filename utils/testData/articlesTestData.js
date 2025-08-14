@@ -1,4 +1,5 @@
-const articlesUrl = "/api/articles";
+const articlesUrl = (articleId) =>
+    `/api/articles${articleId ? `/${articleId}` : ""}`;
 
 const validRequestBody = {
     author: "rogersop",

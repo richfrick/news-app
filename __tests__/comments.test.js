@@ -4,6 +4,9 @@ const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../app/app");
+const {
+    commentsUrlByAccountId,
+} = require("../utils/testData/commentsTestData");
 
 beforeEach(() => {
     return seed(data);
@@ -18,7 +21,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { comments },
-        } = await request(app).get("/api/articles/1/comments");
+        } = await request(app).get(commentsUrlByAccountId(1));
         expect(status).toBe(200);
         expect(comments.length).toBe(11);
     });
@@ -26,7 +29,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { comments },
-        } = await request(app).get("/api/articles/1/comments");
+        } = await request(app).get(commentsUrlByAccountId(1));
         expect(status).toBe(200);
         comments.forEach((comment) => {
             expect(comment).toEqual({
@@ -43,7 +46,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { comments },
-        } = await request(app).get("/api/articles/1/comments");
+        } = await request(app).get(commentsUrlByAccountId(1));
         expect(status).toBe(200);
         expect(comments).toBeSorted({
             key: "created_at",
@@ -62,7 +65,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { comments },
-        } = await request(app).get("/api/articles/2/comments");
+        } = await request(app).get(commentsUrlByAccountId(2));
         expect(status).toBe(200);
         expect(comments).toEqual([]);
     });
@@ -70,7 +73,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { msg },
-        } = await request(app).get("/api/articles/99/comments");
+        } = await request(app).get(commentsUrlByAccountId(99));
         expect(status).toBe(404);
         expect(msg).toEqual("article_id Not Found");
     });
@@ -78,7 +81,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { msg },
-        } = await request(app).get("/api/articles/foo/comments");
+        } = await request(app).get(commentsUrlByAccountId("foo"));
         expect(status).toBe(400);
         expect(msg).toEqual("Bad Request");
     });
@@ -87,7 +90,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
 describe("POST: /api/articles/:article_id/comments", () => {
     it("201: new comment can be created for a valid article article_id", async () => {
         const { status, body } = await request(app)
-            .post("/api/articles/2/comments")
+            .post(commentsUrlByAccountId(2))
             .send({
                 author: "icellusedkars",
                 body: "foo bar",
@@ -98,7 +101,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
 
     it("201: new comment will respond with the posted comment", async () => {
         const { status, body } = await request(app)
-            .post("/api/articles/2/comments")
+            .post(commentsUrlByAccountId(2))
             .send({
                 author: "icellusedkars",
                 body: "foo bar",
@@ -108,14 +111,14 @@ describe("POST: /api/articles/:article_id/comments", () => {
     });
 
     it("201: new comment will assign correct values to comment_id, votes, created_at, author, body, article_id", async () => {
-        await request(app).post("/api/articles/2/comments").send({
+        await request(app).post(commentsUrlByAccountId(2)).send({
             author: "icellusedkars",
             body: "foo bar",
         });
         const {
             status,
             body: { comments },
-        } = await request(app).get("/api/articles/2/comments");
+        } = await request(app).get(commentsUrlByAccountId(2));
         expect(status).toBe(200);
         expect(comments.length).toBe(1);
         expect(comments[0]).toEqual({
@@ -129,7 +132,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
     });
 
     it("201: new comment with extra keys in the request body will still create the comment and ignore the extra key", async () => {
-        await request(app).post("/api/articles/2/comments").send({
+        await request(app).post(commentsUrlByAccountId(2)).send({
             author: "icellusedkars",
             body: "foo bar",
             test: "test",
@@ -137,7 +140,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { comments },
-        } = await request(app).get("/api/articles/2/comments");
+        } = await request(app).get(commentsUrlByAccountId(2));
         expect(status).toBe(200);
         expect(comments.length).toBe(1);
         expect(comments[0]).toEqual({
@@ -178,7 +181,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { msg },
-        } = await request(app).post("/api/articles/2/comments").send({
+        } = await request(app).post(commentsUrlByAccountId(2)).send({
             author: "foo",
             body: "foo bar",
         });
@@ -190,7 +193,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { msg },
-        } = await request(app).post("/api/articles/2/comments").send({
+        } = await request(app).post(commentsUrlByAccountId(2)).send({
             author: 2,
             body: "foo bar",
         });
@@ -202,7 +205,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { msg },
-        } = await request(app).post("/api/articles/2/comments").send({
+        } = await request(app).post(commentsUrlByAccountId(2)).send({
             author: "icellusedkars",
             body: null,
         });
@@ -214,7 +217,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { msg },
-        } = await request(app).post("/api/articles/2/comments").send({
+        } = await request(app).post(commentsUrlByAccountId(2)).send({
             body: null,
         });
         expect(status).toBe(400);
@@ -225,7 +228,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
         const {
             status,
             body: { msg },
-        } = await request(app).post("/api/articles/2/comments").send({
+        } = await request(app).post(commentsUrlByAccountId(2)).send({
             body: null,
         });
         expect(status).toBe(400);
@@ -241,7 +244,7 @@ describe("DELETE: /api/comments/:comment_id", () => {
 
         const {
             body: { comments },
-        } = await request(app).get("/api/articles/1/comments");
+        } = await request(app).get(commentsUrlByAccountId(1));
         expect(comments.length).toBe(10);
     });
 

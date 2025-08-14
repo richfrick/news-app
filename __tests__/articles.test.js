@@ -17,6 +17,10 @@ const {
     requestBodyWithNoTopic,
 } = require("../utils/testData/articlesTestData");
 const { checkDateFormat } = require("../utils/testUtils/testUtils");
+const {
+    validCommentRequestBody,
+    commentsUrlByAccountId,
+} = require("../utils/testData/commentsTestData");
 
 beforeEach(() => {
     return seed(data);
@@ -470,7 +474,7 @@ describe("Articles Endpoint", () => {
     describe("POST: /api/articles", () => {
         it("201: a new article can be created", async () => {
             const { status } = await request(app)
-                .post(articlesUrl)
+                .post(articlesUrl())
                 .send(validRequestBody);
             expect(status).toBe(201);
         });
@@ -480,7 +484,7 @@ describe("Articles Endpoint", () => {
                 body: {
                     article: { title, topic, author, body, article_img_url },
                 },
-            } = await request(app).post(articlesUrl).send(validRequestBody);
+            } = await request(app).post(articlesUrl()).send(validRequestBody);
             expect(status).toBe(201);
             expect(title).toBe("test title");
             expect(topic).toBe("cats");
@@ -496,7 +500,7 @@ describe("Articles Endpoint", () => {
                 body: {
                     article: { article_id, created_at, votes },
                 },
-            } = await request(app).post(articlesUrl).send(validRequestBody);
+            } = await request(app).post(articlesUrl()).send(validRequestBody);
             expect(status).toBe(201);
             expect(typeof article_id).toBe("number");
             expect(checkDateFormat(created_at)).not.toBeNull();
@@ -509,7 +513,7 @@ describe("Articles Endpoint", () => {
                     article: { article_img_url },
                 },
             } = await request(app)
-                .post(articlesUrl)
+                .post(articlesUrl())
                 .send(requestBodyWithNoImage);
             expect(status).toBe(201);
             expect(article_img_url).toBe(
@@ -521,7 +525,7 @@ describe("Articles Endpoint", () => {
                 status,
                 body: { article },
             } = await request(app)
-                .post(articlesUrl)
+                .post(articlesUrl())
                 .send(requestBodyWithExtraKeyValue);
             expect(status).toBe(201);
             expect(article).not.toHaveProperty("foo");
@@ -531,7 +535,7 @@ describe("Articles Endpoint", () => {
                 status,
                 body: { msg },
             } = await request(app)
-                .post(articlesUrl)
+                .post(articlesUrl())
                 .send(requestBodyWithInvalidTopic);
             expect(status).toBe(404);
             expect(msg).toEqual("slug Not Found");
@@ -541,7 +545,7 @@ describe("Articles Endpoint", () => {
                 status,
                 body: { msg },
             } = await request(app)
-                .post(articlesUrl)
+                .post(articlesUrl())
                 .send(requestBodyWithInvalidAuthor);
             expect(status).toBe(404);
             expect(msg).toEqual("username Not Found");
@@ -551,7 +555,7 @@ describe("Articles Endpoint", () => {
                 status,
                 body: { msg },
             } = await request(app)
-                .post(articlesUrl)
+                .post(articlesUrl())
                 .send(requestBodyWithNoAuthor);
             expect(status).toBe(400);
             expect(msg).toEqual("Bad Request: invalid request body");
@@ -561,7 +565,7 @@ describe("Articles Endpoint", () => {
                 status,
                 body: { msg },
             } = await request(app)
-                .post(articlesUrl)
+                .post(articlesUrl())
                 .send(requestBodyWithNoTitle);
             expect(status).toBe(400);
             expect(msg).toEqual("Bad Request: invalid request body");
@@ -571,7 +575,7 @@ describe("Articles Endpoint", () => {
                 status,
                 body: { msg },
             } = await request(app)
-                .post(articlesUrl)
+                .post(articlesUrl())
                 .send(requestBodyWithNoBody);
             expect(status).toBe(400);
             expect(msg).toEqual("Bad Request: invalid request body");
@@ -581,10 +585,50 @@ describe("Articles Endpoint", () => {
                 status,
                 body: { msg },
             } = await request(app)
-                .post(articlesUrl)
+                .post(articlesUrl())
                 .send(requestBodyWithNoTopic);
             expect(status).toBe(400);
             expect(msg).toEqual("Bad Request: invalid request body");
+        });
+    });
+
+    describe("DELETE: /api/articles/:article_id", () => {
+        it("204:No Content is returned if the Article and associated comments are deleted", async () => {
+            const {
+                status: createArticleStatus,
+                body: {
+                    article: { article_id },
+                },
+            } = await request(app).post(articlesUrl()).send(validRequestBody);
+
+            const { status: createCommentStatus } = await request(app)
+                .post(commentsUrlByAccountId(article_id))
+                .send(validCommentRequestBody);
+
+            expect(createArticleStatus).toBe(201);
+            expect(createCommentStatus).toBe(201);
+
+            await request(app).delete(articlesUrl(article_id));
+
+            const { status: getArticleStatus } = await request(app).get(
+                articlesUrl(article_id)
+            );
+            const { status: getCommentStatus } = await request(app).get(
+                commentsUrlByAccountId(article_id)
+            );
+
+            expect(getArticleStatus).toBe(404);
+            expect(getCommentStatus).toBe(404);
+        });
+        it("204: No Content is returned if the article does not exist", async () => {
+            const { status } = await request(app).delete(
+                articlesUrl(123456789)
+            );
+            expect(status).toBe(204);
+        });
+        it("400: Bad request thrown when article_id passed is not an int", async () => {
+            const { status } = await request(app).delete(articlesUrl("foo"));
+            expect(status).toBe(400);
         });
     });
 
