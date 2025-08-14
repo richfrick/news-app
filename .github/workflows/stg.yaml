@@ -3,20 +3,20 @@ run-name: ${{ github.actor }} is deploying to Staging 🚀
 
 on:
     pull_request:
-        types: [opened, synchronize]
+        types: [opened, synchronize, reopened]
 
 jobs:
     test:
         name: Test Execution
         runs-on: ubuntu-latest
         steps:
-            - name: checkout repo
+            - name: Checkout repo
               uses: actions/checkout@v3
 
             - name: Use Node.js
               uses: actions/setup-node@v2
 
-            - name: Use PostgresSQL
+            - name: Use PostgreSQL
               uses: harmon758/postgresql-action@v1
               with:
                   postgresql db: "nc_news_test"
@@ -36,15 +36,24 @@ jobs:
             - name: Checkout repo
               uses: actions/checkout@v3
 
-            - name: Check if SERVICE ID exists exists
-              run: echo "SERVICE ID is set"
-              env:
-                  MY_SECRET: ${{ secrets.RENDER_SERVICE_ID_STAGING }}
+            - name: Set PR branch variable
+              run: echo "PR_BRANCH=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
 
-            - name: Check if API KEY exists exists
-              run: echo "API KEY is set"
-              env:
-                  MY_SECRET: ${{ secrets.RENDER_API_KEY }}
+            - name: Update Render staging branch
+              run: |
+                  echo "Updating Render staging service to use branch: $PR_BRANCH"
+                  curl -X PATCH \
+                    -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+                    -H "Content-Type: application/json" \
+                    -d "{\"branch\": \"${PR_BRANCH}\"}" \
+                    https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID_STAGING }}
+
+            - name: Verify Render branch setting
+              run: |
+                  echo "Fetching Render service info..."
+                  curl -s -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+                    https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID_STAGING }} \
+                    | jq '.branch'
 
             - name: Deploy to staging
               uses: johnbeynon/render-deploy-action@v0.0.8
