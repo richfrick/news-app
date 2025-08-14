@@ -1,4 +1,4 @@
-const commentsUrl = (articleId) =>
+const commentsUrlByAccountId = (articleId) =>
     `/api/articles${articleId ? `/${articleId}` : ""}/comments`;
 
 const validCommentRequestBody = {
@@ -6,4 +6,4 @@ const validCommentRequestBody = {
     body: "foo bar",
 };
 
-module.exports = { commentsUrl, validCommentRequestBody };
+module.exports = { commentsUrlByAccountId, validCommentRequestBody };

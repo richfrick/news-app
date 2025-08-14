@@ -19,7 +19,7 @@ const {
 const { checkDateFormat } = require("../utils/testUtils/testUtils");
 const {
     validCommentRequestBody,
-    commentsUrl,
+    commentsUrlByAccountId,
 } = require("../utils/testData/commentsTestData");
 
 beforeEach(() => {
@@ -602,7 +602,7 @@ describe("Articles Endpoint", () => {
             } = await request(app).post(articlesUrl()).send(validRequestBody);
 
             const { status: createCommentStatus } = await request(app)
-                .post(commentsUrl(article_id))
+                .post(commentsUrlByAccountId(article_id))
                 .send(validCommentRequestBody);
 
             expect(createArticleStatus).toBe(201);
@@ -614,7 +614,7 @@ describe("Articles Endpoint", () => {
                 articlesUrl(article_id)
             );
             const { status: getCommentStatus } = await request(app).get(
-                commentsUrl(article_id)
+                commentsUrlByAccountId(article_id)
             );
 
             expect(getArticleStatus).toBe(404);
