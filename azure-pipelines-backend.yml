@@ -12,11 +12,12 @@ pool:
 vmImage: "ubuntu-latest"
 
 variables:
+environment: stg
 azureServiceConnection: "AzureServiceConnection"
 acrServiceConnection: "ACRServiceConnection" # Docker registry service connection (ACR)
-imageRepository: "news-app"
+imageRepository: "news-app-stg"
 imageTag: "$(Build.BuildId)"
-backend_rg: "tfstate-rg"
+backend_rg: "newsapp-stg-rg"
 
 steps:
     - checkout: self
@@ -26,12 +27,10 @@ steps:
       displayName: "Download infra outputs artifact"
 
     - script: |
-          ACR_LOGIN=$(jq -r .acr_login_server.value $(Pipeline.Workspace)/
-          infraPipeline/tfoutputs/tfoutputs.json)
-          WEBAPP_NAME=$(jq -r .webapp_name.value $(Pipeline.Workspace)/
-          infraPipeline/tfoutputs/tfoutputs.json)
-          KEYVAULT_NAME=$(jq -r .key_vault_name.value $(Pipeline.Workspace)/
-          infraPipeline/tfoutputs/tfoutputs.json)
+          ACR_LOGIN=$(jq -r .acr_login_server.value $(Pipeline.Workspace)/infraPipeline/tfoutputs/tfoutputs.json)
+          WEBAPP_NAME=$(jq -r .webapp_name.value $(Pipeline.Workspace)/infraPipeline/tfoutputs/tfoutputs.json)
+          KEYVAULT_NAME=$(jq -r .key_vault_name.value $(Pipeline.Workspace)/infraPipeline/tfoutputs/tfoutputs.json)
+
           echo "##vso[task.setvariable variable=acrLoginServer]$ACR_LOGIN"
           echo "##vso[task.setvariable variable=webAppName]$WEBAPP_NAME"
           echo "##vso[task.setvariable variable=keyVaultName]$KEYVAULT_NAME"
@@ -44,7 +43,7 @@ steps:
       containerRegistry: "$(acrServiceConnection)"
       repository: "$(imageRepository)"
       command: "buildAndPush"
-      Dockerfile: "Dockerfile"
+      Dockerfile: "Dockerfile.stg"
       buildContext: "."
       tags: |
           $(imageTag)
@@ -73,10 +72,10 @@ steps:
       SecretsFilter: "db-connection-string"
       RunAsPreJob: false
 
-    # Run DB seed script locally in pipeline (alternative: run in container)
+    # Run DB seed script locally in pipeline (alternative: run in container) thenpm run seed-stg runs "NODE_ENV=staging npm run start"
     - script: |
           echo "Seeding DB..."
-          export DATABASE_URL=$(db-connection-string)
+          export DATABASE_URL=$(DB_CONNECTION_STRING)
           cd scripts || true
-          node seed.js
+          npm run seed-stg
 displayName: "Seed the database"
