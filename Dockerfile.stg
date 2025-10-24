@@ -1,0 +1,14 @@
+FROM node:20
+
+WORKDIR /app
+
+COPY package*.json .
+RUN npm install
+
+COPY . .
+
+RUN chmod +x ./scripts/wait-for-it.sh
+
+ENV TZ=UTC
+
+CMD ["npm", "run", "start-stg"]

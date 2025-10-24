@@ -1,4 +1,4 @@
-services:
+services:   
     postgres:
         image: postgres:16
         container_name: pg_dev
@@ -16,7 +16,9 @@ services:
         command: ["postgres", "-c", "timezone=UTC"]
 
     node-app:
-        build: .
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
         container_name: dev_runner
         ports:
             - "9090:9090"
