@@ -74,8 +74,8 @@ steps:
 
     # Run DB seed script locally in pipeline (alternative: run in container) thenpm run seed-stg runs "NODE_ENV=staging npm run start"
     - script: |
-          echo "Seeding DB..."
+          echo "Seeding DB if empty..."
           export DATABASE_URL=$(DB_CONNECTION_STRING)
           cd scripts || true
-          npm run seed-stg
-displayName: "Seed the database"
+          node ./scripts/check-db.js && npm run seed-stg || echo "DB already seeded"
+      displayName: "Seed the database if empty"
