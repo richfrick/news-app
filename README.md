@@ -33,7 +33,7 @@ You can start the service in dev mode which is a containerised environment with 
 
     > git clone https://github.com/richfrick/news-app.git
 
-2. Create a file called _.env.development_
+2. Create a file called _.env.docker_
 
     > PGHOST=postgres \
     >  PGDATABASE=nc_news \
@@ -53,7 +53,17 @@ You can start the service in dev mode which is a containerised environment with 
 
     this launches using nodemon so will hot reload when you sve changes
 
-    > docker-compose -f compose.dev.yaml up --build
+    > docker-compose -f compose.dev.yaml up --build -d
+
+5. View logs
+
+    To view the container logs while the service is running
+
+    All Logs
+
+    > docker compose -f compose.dev.yaml logs -f
+
+    > docker compose -f compose.dev.yaml logs -f dev_runner/pgdev #delete as appropriate
 
 If you would rather run locally ensure you have a minimum of node v20 postgres v17 installed then
 
