@@ -15,8 +15,6 @@ variables:
 stages:
     - stage: Deploy
       displayName: "Deploy to Production"
-      dependsOn: Build
-      condition: succeeded()
       jobs:
           - job: DeployProd
             displayName: "Deploy to Render Production"
