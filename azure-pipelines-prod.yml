@@ -13,22 +13,6 @@ variables:
       value: "20"
 
 stages:
-    - stage: Build
-      displayName: "Build for Production"
-      jobs:
-          - job: BuildApp
-            displayName: "Build Backend"
-            steps:
-                - checkout: self
-                - task: NodeTool@0
-                  inputs:
-                      versionSpec: "20"
-                - script: |
-                      set -eo pipefail
-                      npm ci
-                      npm run build
-                  displayName: "Build app"
-
     - stage: Deploy
       displayName: "Deploy to Production"
       dependsOn: Build
