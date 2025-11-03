@@ -7,18 +7,23 @@ pool:
     vmImage: "ubuntu-latest"
 
 variables:
-    NODE_VERSION: "20"
+    - group: news-app-prod
+    - group: render-auth
+    - name: NODE_VERSION
+      value: "20"
 
 stages:
     - stage: Deploy
+      displayName: "Deploy to Production"
       jobs:
-          - job: DeployToProd
+          - job: DeployProd
             displayName: "Deploy to Render Production"
             steps:
                 - checkout: self
-
                 - script: |
-                      echo "Deploying to Render production..."
+                      set -eo pipefail
+                      echo "Deploying production branch: $BUILD_SOURCEBRANCHNAME"
+
                       curl -X POST \
                         -H "Authorization: Bearer $(RENDER_API_KEY)" \
                         -H "Content-Type: application/json" \
