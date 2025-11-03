@@ -1,23 +1,24 @@
-trigger: none
 pr:
     branches:
         include:
-            - "*"
+            - main
+
+trigger: none
 
 pool:
     vmImage: "ubuntu-latest"
 
 variables:
-  - group: news-app-stg
-  - group: render-auth
-  - name: NODE_VERSION
-    value: "20"
-  - name: DB_NAME
-    value: "nc_news_test"
-  - name: DB_USER
-    value: "test_user"
-  - name: DB_PASSWORD
-    value: "password"
+    - group: news-app-stg
+    - group: render-auth
+    - name: NODE_VERSION
+      value: "20"
+    - name: DB_NAME
+      value: "nc_news_test"
+    - name: DB_USER
+      value: "test_user"
+    - name: DB_PASSWORD
+      value: "password"
 
 stages:
     - stage: Test
@@ -26,7 +27,6 @@ stages:
             displayName: "Run Unit & Integration Tests"
             steps:
                 - checkout: self
-
                 - task: NodeTool@0
                   inputs:
                       versionSpec: "$(NODE_VERSION)"
@@ -44,6 +44,7 @@ stages:
                           postgres:13
 
                 - script: |
+                      set -eo pipefail
                       npm ci
                       PGDATABASE=$(DB_NAME) PGUSER=$(DB_USER) PGPASSWORD=$(DB_PASSWORD) npm test
                   displayName: "Run Tests"
@@ -56,18 +57,22 @@ stages:
             displayName: "Deploy to Render Staging"
             steps:
                 - checkout: self
-
                 - script: |
+                      set -eo pipefail
+
+                      PR_BRANCH=${SYSTEM_PULLREQUEST_SOURCEBRANCH:-$BUILD_SOURCEBRANCHNAME}
+                      echo "Deploying branch: $PR_BRANCH"    
+
                       echo "Updating Render staging service branch to PR source..."
                       curl -X PATCH \
-                        -H "Authorization: Bearer $(RENDER_API_KEY)" \
-                        -H "Content-Type: application/json" \
-                        -d "{\"branch\": \"$(System.PullRequest.SourceBranch)\"}" \
-                        https://api.render.com/v1/services/$(RENDER_SERVICE_ID)
+                      -H "Authorization: Bearer $(RENDER_API_KEY)" \
+                      -H "Content-Type: application/json" \
+                      -d "{\"branch\": \"${PR_BRANCH}\"}" \
+                      https://api.render.com/v1/services/$(RENDER_SERVICE_ID)
 
                       echo "Triggering Render deploy..."
                       curl -X POST \
-                        -H "Authorization: Bearer $(RENDER_API_KEY)" \
-                        -H "Content-Type: application/json" \
-                        https://api.render.com/v1/services/$(RENDER_SERVICE_ID)/deploys
+                      -H "Authorization: Bearer $(RENDER_API_KEY)" \
+                      -H "Content-Type: application/json" \
+                      https://api.render.com/v1/services/$(RENDER_SERVICE_ID)/deploys
                   displayName: "Deploy via Render API"
