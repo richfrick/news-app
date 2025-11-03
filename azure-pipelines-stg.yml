@@ -1,0 +1,67 @@
+trigger: none
+pr:
+    branches:
+        include:
+            - "*"
+
+pool:
+    vmImage: "ubuntu-latest"
+
+variables:
+    NODE_VERSION: "20"
+    DB_NAME: "nc_news_test"
+    DB_USER: "test_user"
+    DB_PASSWORD: "password"
+
+stages:
+    - stage: Test
+      jobs:
+          - job: RunTests
+            displayName: "Run Unit & Integration Tests"
+            steps:
+                - checkout: self
+
+                - task: NodeTool@0
+                  inputs:
+                      versionSpec: "$(NODE_VERSION)"
+
+                - task: Docker@2
+                  displayName: "Start PostgreSQL container"
+                  inputs:
+                      command: "run"
+                      arguments: >
+                          -d --name postgres
+                          -e POSTGRES_DB=$(DB_NAME)
+                          -e POSTGRES_USER=$(DB_USER)
+                          -e POSTGRES_PASSWORD=$(DB_PASSWORD)
+                          -p 5432:5432
+                          postgres:13
+
+                - script: |
+                      npm ci
+                      PGDATABASE=$(DB_NAME) PGUSER=$(DB_USER) PGPASSWORD=$(DB_PASSWORD) npm test
+                  displayName: "Run Tests"
+
+    - stage: Deploy
+      dependsOn: Test
+      condition: succeeded()
+      jobs:
+          - job: DeployToRender
+            displayName: "Deploy to Render Staging"
+            steps:
+                - checkout: self
+
+                - script: |
+                      echo "Updating Render staging service branch to PR source..."
+                      curl -X PATCH \
+                        -H "Authorization: Bearer $(RENDER_API_KEY)" \
+                        -H "Content-Type: application/json" \
+                        -d "{\"branch\": \"$(System.PullRequest.SourceBranch)\"}" \
+                        https://api.render.com/v1/services/$(RENDER_SERVICE_ID_STAGING)
+
+                      echo "Triggering Render deploy..."
+                      curl -X POST \
+                        -H "Authorization: Bearer $(RENDER_API_KEY)" \
+                        -H "Content-Type: application/json" \
+                        https://api.render.com/v1/services/$(RENDER_SERVICE_ID_STAGING)/deploys
+                  displayName: "Deploy via Render API"
