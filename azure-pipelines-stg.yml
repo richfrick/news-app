@@ -8,10 +8,16 @@ pool:
     vmImage: "ubuntu-latest"
 
 variables:
-    NODE_VERSION: "20"
-    DB_NAME: "nc_news_test"
-    DB_USER: "test_user"
-    DB_PASSWORD: "password"
+  - group: news-app-stg
+  - group: render-auth
+  - name: NODE_VERSION
+    value: "20"
+  - name: DB_NAME
+    value: "nc_news_test"
+  - name: DB_USER
+    value: "test_user"
+  - name: DB_PASSWORD
+    value: "password"
 
 stages:
     - stage: Test
