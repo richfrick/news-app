@@ -11,13 +11,13 @@
 
 ## 🚀 About
 
-A small news app that allows you read & post articles. once in the article you can interact with it via up/downvoting or leaving comments.
+Elaborate-Snickerdoodle is a small blogging app where you can view articles from the world of Football, Cooking and Coding. Find an article that interests you, view it, then be sure to leave a comment or up/down vote it.
 
 ## 📝 Hosted version
 
-Currently hosted on a free version of render which tears down after 15 mins on inactivity, so hitting this for the first time could take up to 50s to respond as the service spins back up.
+Currently hosted on a free version of Render which tears down after 15 mins of inactivity, so hitting this for the first time could take up to 50s to respond as the service spins back up.
 
-https://news-app-ugpw.onrender.com/api/
+[Elaborate-Snickerdoodle](https://elaborate-snickerdoodle-8745b3.netlify.app)
 
 ## 📚 Pre-requsites
 
@@ -51,7 +51,7 @@ You can start the service in dev mode which is a containerised environment with 
 
 4. Start in dev mode
 
-    this launches using nodemon so will hot reload when you sve changes
+    this launches using nodemon so will hot reload when you save changes
 
     > docker-compose -f compose.dev.yaml up --build -d
 
@@ -91,7 +91,7 @@ If you would rather run locally ensure you have a minimum of node v20 postgres v
 
 ## 🚀 Usage
 
-For a list of endponts and direction on their use consult the [/api](http://localhost:9090/api) enpoint of the running service
+For a list of endponts and direction on their use consult the [api](http://localhost:9090/api) enpoint of the running service
 
 ## 📝 Testing
 
